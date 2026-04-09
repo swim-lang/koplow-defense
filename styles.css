@@ -336,6 +336,10 @@ a {
   margin: 0;
 }
 
+.col p strong {
+  font-weight: 600;
+}
+
 /* ---------- DARK ROAD ---------- */
 .road {
   position: relative;
