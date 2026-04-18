@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Koplow Defense — Type System</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body { background: var(--paper); color: var(--black); }
+
+      .guide { max-width: 900px; margin: 0 auto; padding: 80px 40px; }
+
+      .guide-header {
+        display: flex; align-items: center; gap: 16px;
+        margin-bottom: 64px; padding-bottom: 32px;
+        border-bottom: 1px solid var(--divider);
+      }
+      .guide-header img { width: 32px; height: auto; }
+      .guide-header h1 {
+        font-size: var(--type-heading); font-weight: var(--weight-bold); margin: 0;
+      }
+
+      .scale-row {
+        display: flex; align-items: baseline; gap: 32px;
+        padding: 32px 0; border-bottom: 1px solid #ccc;
+      }
+
+      .scale-meta {
+        flex: 0 0 160px; display: flex; flex-direction: column; gap: 6px;
+      }
+      .scale-name {
+        font-size: var(--type-caption); font-weight: var(--weight-bold);
+        text-transform: uppercase;
+      }
+      .scale-spec {
+        font-size: var(--type-eyebrow); color: var(--muted); font-style: italic;
+      }
+
+      .scale-sample { flex: 1; }
+
+      /* Color swatches */
+      .color-section { margin-top: 80px; padding-top: 40px; border-top: 1px solid var(--divider); }
+      .color-section h2 {
+        font-size: var(--type-label); font-weight: var(--weight-bold); margin: 0 0 32px;
+      }
+      .swatches { display: flex; gap: 24px; flex-wrap: wrap; }
+      .swatch {
+        display: flex; flex-direction: column; align-items: center; gap: 10px;
+      }
+      .swatch-circle {
+        width: 64px; height: 64px; border-radius: 50%; border: 1px solid #ccc;
+      }
+      .swatch-label { font-size: var(--type-eyebrow); font-weight: var(--weight-bold); text-transform: uppercase; }
+      .swatch-value { font-size: var(--type-eyebrow); color: var(--muted); }
+
+      /* Spacing section */
+      .spacing-section { margin-top: 80px; padding-top: 40px; border-top: 1px solid var(--divider); }
+      .spacing-section h2 {
+        font-size: var(--type-label); font-weight: var(--weight-bold); margin: 0 0 32px;
+      }
+      .spacing-note { font-size: var(--type-body); color: var(--muted); line-height: 1.7; }
+      .spacing-note code {
+        background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 3px;
+        font-size: var(--type-caption);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="guide">
+
+      <div class="guide-header">
+        <img src="assets/logos/Logo-Black.png" alt="" />
+        <h1>TYPE SYSTEM</h1>
+      </div>
+
+      <!-- DISPLAY -->
+      <div class="scale-row">
+        <div class="scale-meta">
+          <div class="scale-name">Display</div>
+          <div class="scale-spec">52px / Bold 700</div>
+          <div class="scale-spec">var(--type-display)</div>
+        </div>
+        <div class="scale-sample" style="font-size:var(--type-display);font-weight:var(--weight-bold);line-height:1.15;">
+          REAL DEFENSE ISN'T GENTLE
+        </div>
+      </div>
+
+      <!-- HEADING -->
+      <div class="scale-row">
+        <div class="scale-meta">
+          <div class="scale-name">Heading</div>
+          <div class="scale-spec">38px / Bold 700</div>
+          <div class="scale-spec">var(--type-heading)</div>
+        </div>
+        <div class="scale-sample" style="font-size:var(--type-heading);font-weight:var(--weight-bold);line-height:1.2;">
+          HOW WE DEFEND
+        </div>
+      </div>
+
+      <!-- SUBHEADING -->
+      <div class="scale-row">
+        <div class="scale-meta">
+          <div class="scale-name">Subheading</div>
+          <div class="scale-spec">22px / Bold 700</div>
+          <div class="scale-spec">var(--type-subheading)</div>
+        </div>
+        <div class="scale-sample" style="font-size:var(--type-subheading);font-weight:var(--weight-bold);line-height:1.4;">
+          <strong>Sharp isn't a style.</strong> <span class="gold">It's how cases are won.</span>
+        </div>
+      </div>
+
+      <!-- LABEL -->
+      <div class="scale-row">
+        <div class="scale-meta">
+          <div class="scale-name">Label</div>
+          <div class="scale-spec">18px / Bold 700</div>
+          <div class="scale-spec">var(--type-label)</div>
+        </div>
+        <div class="scale-sample" style="font-size:var(--type-label);font-weight:var(--weight-bold);line-height:1.3;">
+          <span class="gold">PRECISION</span> &nbsp;&nbsp; <span class="gold">PRESSURE</span> &nbsp;&nbsp; <span class="gold">PROOF</span>
+        </div>
+      </div>
+
+      <!-- BODY -->
+      <div class="scale-row">
+        <div class="scale-meta">
+          <div class="scale-name">Body</div>
+          <div class="scale-spec">17px / Book 400</div>
+          <div class="scale-spec">var(--type-body)</div>
+        </div>
+        <div class="scale-sample" style="font-size:var(--type-body);line-height:1.6;">
+          You work directly with your lawyer. No layers. No handoffs. When one decision decides everything.
+        </div>
+      </div>
+
+      <!-- SMALL -->
+      <div class="scale-row">
+        <div class="scale-meta">
+          <div class="scale-name">Small</div>
+          <div class="scale-spec">14px / Book 400</div>
+          <div class="scale-spec">var(--type-small)</div>
+        </div>
+        <div class="scale-sample" style="font-size:var(--type-small);line-height:1.5;">
+          ABOUT &nbsp;&nbsp; HOW &nbsp;&nbsp; CRIMINAL DEFENSE &nbsp;&nbsp; ETHICS DEFENSE
+        </div>
+      </div>
+
+      <!-- CAPTION -->
+      <div class="scale-row">
+        <div class="scale-meta">
+          <div class="scale-name">Caption</div>
+          <div class="scale-spec">13px / Book 400, often italic</div>
+          <div class="scale-spec">var(--type-caption)</div>
+        </div>
+        <div class="scale-sample" style="font-size:var(--type-caption);line-height:1.5;">
+          <em style="color:var(--muted);">Causation theory was exposed as flawed</em>
+        </div>
+      </div>
+
+      <!-- EYEBROW -->
+      <div class="scale-row">
+        <div class="scale-meta">
+          <div class="scale-name">Eyebrow</div>
+          <div class="scale-spec">10px / Book 400</div>
+          <div class="scale-spec">var(--type-eyebrow)</div>
+        </div>
+        <div class="scale-sample" style="font-size:var(--type-eyebrow);line-height:1.5;color:#888;">
+          LOOK CLOSER &nbsp;&nbsp;&nbsp; MENU &nbsp;&nbsp;&nbsp; 2501 North 7th Street, Phoenix, Arizona 85006
+        </div>
+      </div>
+
+      <!-- COLORS -->
+      <div class="color-section">
+        <h2>COLORS</h2>
+        <div class="swatches">
+          <div class="swatch">
+            <div class="swatch-circle" style="background:var(--black);"></div>
+            <div class="swatch-label">Black</div>
+            <div class="swatch-value">#111111</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-circle" style="background:var(--white);"></div>
+            <div class="swatch-label">White</div>
+            <div class="swatch-value">#f3f3f3</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-circle" style="background:var(--gold);"></div>
+            <div class="swatch-label">Gold</div>
+            <div class="swatch-value">#866f43</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-circle" style="background:var(--paper);"></div>
+            <div class="swatch-label">Paper</div>
+            <div class="swatch-value">#ebebeb</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-circle" style="background:var(--muted);"></div>
+            <div class="swatch-label">Muted</div>
+            <div class="swatch-value">#555</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPACING NOTES -->
+      <div class="spacing-section">
+        <h2>RULES</h2>
+        <div class="spacing-note">
+          <p><strong>Font:</strong> Gotham (Book 400, Bold 700) via Typekit</p>
+          <p><strong>Letter spacing:</strong> <code>0.1375em</code> global — inherited everywhere</p>
+          <p><strong>Weights:</strong> Bold (700) for Display, Heading, Subheading, and Label. Book (400) for Body, Small, Caption, Eyebrow.</p>
+          <p><strong>Gold accent:</strong> Used on Label titles (PRECISION, PRESSURE, PROOF) and inline emphasis ("It's how cases are won.")</p>
+          <p><strong>Italic + Muted:</strong> Used for sub-lede and case notes — supportive, not primary.</p>
+          <p><strong>Mobile breakpoint:</strong> <code>1200px</code> — switches to hamburger menu</p>
+        </div>
+      </div>
+
+    </div>
+  </body>
+</html>
