@@ -21,6 +21,13 @@
   --type-caption: 13px;    /* Notes, small CTA */
   --type-eyebrow: 10px;    /* Micro labels */
 
+  /* CTA sizing */
+  --type-cta: 18px;
+  --cta-outline-padding-y: 18px;
+  --cta-outline-padding-x: 40px;
+  --cta-outline-radius: 10px;
+  --cta-outline-border: 2px;
+
   /* Weights — Gotham (via Typekit) */
   --weight-book: 400;      /* Body, nav, captions */
   --weight-bold: 700;      /* Display, headings, labels, emphasis */
@@ -502,11 +509,15 @@ a {
 
 .footer-cta {
   margin-bottom: 100px;
-  padding: 14px 28px;
-  font-size: var(--type-caption);
+  padding: var(--cta-outline-padding-y) var(--cta-outline-padding-x);
+  font-size: var(--type-cta);
   background: transparent;
   color: var(--white);
-  border: 1px solid var(--white);
+  border: var(--cta-outline-border) solid rgba(243, 243, 243, 0.82);
+  border-radius: var(--cta-outline-radius);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.12em;
+  line-height: 1;
 }
 
 .footer-mark {
@@ -794,6 +805,14 @@ a {
   }
   .footer-cta {
     margin-bottom: 72px;
+  }
+  .footer-cta,
+  .closing-cta .btn,
+  .ethics-outline-btn,
+  .criminal-outline-btn,
+  .contact-outline-btn {
+    padding: 16px 28px;
+    font-size: 16px;
   }
 }
 
@@ -1269,7 +1288,7 @@ a {
   justify-content: center;
   gap: 24px;
   color: var(--white);
-  margin-top: -40px;
+  margin-top: -80px;
 }
 
 .bio-name {
@@ -1325,11 +1344,15 @@ a {
 }
 
 .closing-cta .btn {
-  border: 1px solid var(--white);
+  border: var(--cta-outline-border) solid rgba(243, 243, 243, 0.82);
   color: var(--white);
   background: transparent;
-  padding: 14px 28px;
-  font-size: var(--type-caption);
+  padding: var(--cta-outline-padding-y) var(--cta-outline-padding-x);
+  font-size: var(--type-cta);
+  font-weight: var(--weight-bold);
+  border-radius: var(--cta-outline-radius);
+  letter-spacing: 0.12em;
+  line-height: 1;
 }
 
 /* ---------- ABOUT PAGE RESPONSIVE ---------- */
@@ -1476,10 +1499,13 @@ a {
 .ethics-outline-btn {
   background: transparent;
   color: var(--white);
-  border: 1px solid rgba(243, 243, 243, 0.7);
-  padding: 14px 22px;
-  font-size: var(--type-caption);
-  font-weight: var(--weight-semibold);
+  border: var(--cta-outline-border) solid rgba(243, 243, 243, 0.82);
+  padding: var(--cta-outline-padding-y) var(--cta-outline-padding-x);
+  font-size: var(--type-cta);
+  font-weight: var(--weight-bold);
+  border-radius: var(--cta-outline-radius);
+  letter-spacing: 0.12em;
+  line-height: 1;
 }
 
 .ethics-hero {
@@ -2048,11 +2074,15 @@ a {
 }
 
 .criminal-outline-btn {
-  border: 1px solid var(--white);
+  border: var(--cta-outline-border) solid rgba(243, 243, 243, 0.82);
   color: var(--white);
   background: transparent;
-  padding: 14px 28px;
-  font-size: var(--type-caption);
+  padding: var(--cta-outline-padding-y) var(--cta-outline-padding-x);
+  font-size: var(--type-cta);
+  font-weight: var(--weight-bold);
+  border-radius: var(--cta-outline-radius);
+  letter-spacing: 0.12em;
+  line-height: 1;
 }
 
 .criminal-hero {
@@ -2538,11 +2568,15 @@ a {
 }
 
 .contact-outline-btn {
-  border: 1px solid var(--white);
+  border: var(--cta-outline-border) solid rgba(243, 243, 243, 0.82);
   color: var(--white);
   background: transparent;
-  padding: 14px 28px;
-  font-size: var(--type-caption);
+  padding: var(--cta-outline-padding-y) var(--cta-outline-padding-x);
+  font-size: var(--type-cta);
+  font-weight: var(--weight-bold);
+  border-radius: var(--cta-outline-radius);
+  letter-spacing: 0.12em;
+  line-height: 1;
 }
 
 .contact-hero {
