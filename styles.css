@@ -40,6 +40,15 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+  /* Sections with .scroll-snap-align: start will softly settle into place
+     once the user lingers near them. Proximity (vs mandatory) means it
+     only nudges into alignment when scroll comes to rest nearby — never
+     a forced stop mid-scroll. */
+  scroll-snap-type: y proximity;
+}
+
 html,
 body {
   margin: 0;
@@ -50,13 +59,20 @@ body {
   background: var(--black);
   letter-spacing: 0.1375em;
   -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 /* ---------- MOTION ---------- */
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
@@ -91,20 +107,53 @@ body {
 
 .reveal {
   opacity: 0;
-  transform: translateY(32px);
-  transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(16px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
 }
 
 .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
+  will-change: auto;
+}
+
+/* Scroll-driven fade-in: section opacity/translate are set by JS via
+   CSS vars (--enter-opacity, --enter-translate), tying the entrance to
+   scroll position rather than a one-shot timer. Used for the section
+   that follows the hero so the cross-fade with the hero stays in sync. */
+.scroll-fade-in {
+  opacity: var(--enter-opacity, 0);
+  transform: translateY(var(--enter-translate, 16px));
+  transition: none;
+  will-change: opacity, transform;
+}
+
+.reveal.scroll-fade-in,
+.reveal.scroll-fade-in.is-visible {
+  opacity: var(--enter-opacity, 0);
+  transform: translateY(var(--enter-translate, 16px));
+  transition: none;
+}
+
+/* Snap sections: clean, natural stop — no fade, no movement. */
+.snap,
+.snap.reveal,
+.snap.scroll-fade-in,
+.snap .anim-fade-up,
+.snap .anim-fade-in {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+  transition: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .anim-fade-up,
   .anim-fade-in,
-  .reveal {
+  .reveal,
+  .scroll-fade-in {
     opacity: 1 !important;
     transform: none !important;
     animation: none !important;
@@ -115,7 +164,8 @@ body {
 @media (max-width: 768px) {
   .anim-fade-up,
   .anim-fade-in,
-  .reveal {
+  .reveal,
+  .scroll-fade-in {
     opacity: 1 !important;
     transform: none !important;
     animation: none !important;
@@ -145,6 +195,26 @@ a {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+/* Wrapper that scrolls out as you leave the hero — content gently
+   moves up and fades while the next section eases in. */
+.hero-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: var(--hero-fade-opacity, 1);
+  transform: translateY(var(--hero-fade-translate, 0));
+  will-change: opacity, transform;
+}
+
+/* Page-agnostic hero scroll-out: any element marked [data-hero-content]
+   participates regardless of layout class. */
+[data-hero-content] {
+  opacity: var(--hero-fade-opacity, 1);
+  transform: translateY(var(--hero-fade-translate, 0));
+  will-change: opacity, transform;
 }
 
 .nav {
@@ -264,16 +334,46 @@ a {
   font-size: var(--type-small);
   font-weight: 400;
   line-height: 1;
+  animation: scrollHint 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
 
-/* ---------- PAGE CTA ---------- */
-.home-cta {
+@keyframes scrollHint {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(4px);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .look-closer .chevron {
+    animation: none;
+  }
+}
+
+/* ---------- FINALE (When It Matters + When It Has To Be Sharp) ---------- */
+/* Combined section that snaps as one — both blocks visible together once
+   it settles into place. Tall enough that scroll-snap-align: start can
+   actually align the section's top with the viewport top. */
+.section-finale {
   background: #000;
   color: var(--white);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 90px 80px 0;
+  justify-content: space-between;
+  padding: 96px 80px;
+  min-height: 100vh;
+  gap: 64px;
+}
+
+.finale-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* ---------- PAPER SECTIONS ---------- */
@@ -338,6 +438,30 @@ a {
   align-items: flex-start;
   text-align: left;
   gap: 20px;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Stagger fires once the scroll-driven cross-fade has visibly begun. */
+.scroll-fade-in.in-view .col,
+.reveal.is-visible:not(.scroll-fade-in) .col {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-fade-in.in-view .col:nth-child(1),
+.reveal.is-visible:not(.scroll-fade-in) .col:nth-child(1) { transition-delay: 0.10s; }
+.scroll-fade-in.in-view .col:nth-child(2),
+.reveal.is-visible:not(.scroll-fade-in) .col:nth-child(2) { transition-delay: 0.25s; }
+.scroll-fade-in.in-view .col:nth-child(3),
+.reveal.is-visible:not(.scroll-fade-in) .col:nth-child(3) { transition-delay: 0.40s; }
+
+.snap .col {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
 }
 
 .col + .col {
@@ -371,7 +495,6 @@ a {
   background-image: url("assets/photos/Home-Straight.png");
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
   color: var(--white);
   display: flex;
   align-items: center;
@@ -463,12 +586,19 @@ a {
 }
 
 /* ---------- WHEN IT MATTERS ---------- */
+/* Generic soft-snap target. Pairs with html { scroll-snap-type: y proximity }
+   so any section that opts in will gently align to the viewport top once
+   the user lingers near it — never a forced stop mid-scroll. */
+.snap-target {
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+}
+
 .when-block {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  margin-top: 120px;
 }
 
 .moments {
@@ -480,13 +610,15 @@ a {
   gap: 22px;
   font-size: 18px;
   letter-spacing: 0.1375em;
-  color: #2a2a2a;
+  color: var(--white);
   text-align: left;
 }
 
 .when-block .section-title.has-rule {
   width: min(640px, 100%);
   text-align: center;
+  color: var(--white);
+  border-bottom-color: var(--white);
 }
 
 /* ---------- FOOTER ---------- */
@@ -542,7 +674,7 @@ a {
   margin-top: 16px;
 }
 
-.home-cta + .footer {
+.section-finale + .footer {
   padding-top: 0;
 }
 
@@ -711,7 +843,7 @@ a {
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 1200px) {
   .hero,
-  .home-cta,
+  .section-finale,
   .footer {
     padding-left: 24px;
     padding-right: 24px;
@@ -764,7 +896,6 @@ a {
   }
   .road {
     height: 380px;
-    background-attachment: scroll;
   }
   .road-inner {
     flex-direction: column;
@@ -1278,6 +1409,20 @@ a {
   max-height: 760px;
   object-fit: contain;
   object-position: center top;
+  /* Right edge fades into the text side so the image and copy read as one
+     integrated composition, not two side-by-side panels. */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    #000 0%,
+    #000 55%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    #000 0%,
+    #000 55%,
+    transparent 100%
+  );
 }
 
 .bio-text {
@@ -1451,6 +1596,10 @@ a {
     height: 100%;
     max-height: none;
     object-position: center bottom;
+    /* On mobile the photo sits above the text in a stacked layout — the
+       horizontal fade no longer makes sense, so drop the mask for clarity. */
+    -webkit-mask-image: none;
+    mask-image: none;
   }
   .bio-text {
     padding: 32px 24px;
@@ -1866,6 +2015,20 @@ a {
   background-position: right center;
   background-size: auto 100%;
   background-repeat: no-repeat;
+  /* Left edge fades into the text side so the image and copy read as one
+     integrated composition, not two columns. */
+  -webkit-mask-image: linear-gradient(
+    to left,
+    #000 0%,
+    #000 55%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to left,
+    #000 0%,
+    #000 55%,
+    transparent 100%
+  );
 }
 
 .ethics-closing {
@@ -1962,6 +2125,9 @@ a {
 
   .ethics-profile-image {
     min-height: 420px;
+    /* Stacked layout on mobile — drop the horizontal fade. */
+    -webkit-mask-image: none;
+    mask-image: none;
   }
 
   .ethics-decider {
@@ -2258,6 +2424,11 @@ a {
   background-position: center;
   background-repeat: no-repeat;
   padding: 110px 24px 120px;
+  /* Tall enough that scroll-snap-align: start can reach the section's top
+     and produce a real "sense of arrival" on the case study. */
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
 }
 
 .criminal-feature-inner {

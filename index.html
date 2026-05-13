@@ -11,23 +11,25 @@
     <section class="hero">
       <div data-include="partials/header.html?v=20260418-nav3"></div>
 
-      <h1 class="hero-title anim-fade-up delay-2">
-        REAL DEFENSE ISN'T<br />
-        GENTLE. <span class="gold">IT'S SHARP</span>
-      </h1>
+      <div class="hero-content">
+        <h1 class="hero-title anim-fade-up delay-2">
+          REAL DEFENSE ISN'T<br />
+          GENTLE. <span class="gold">IT'S SHARP</span>
+        </h1>
 
-      <div class="hero-image anim-fade-up delay-3">
-        <img src="assets/photos/Home-hero.png" alt="" />
-      </div>
+        <div class="hero-image anim-fade-up delay-3">
+          <img src="assets/photos/Home-hero.png" alt="" />
+        </div>
 
-      <div class="look-closer anim-fade-up delay-5">
-        <span>LOOK CLOSER</span>
-        <span class="chevron"><svg width="28" height="10" viewBox="0 0 28 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L14 9L27 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <div class="look-closer anim-fade-up delay-5">
+          <span>LOOK CLOSER</span>
+          <span class="chevron"><svg width="28" height="10" viewBox="0 0 28 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L14 9L27 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
       </div>
     </section>
 
     <!-- HOW WE DEFEND -->
-    <section class="paper-bg section reveal" id="how">
+    <section class="paper-bg section reveal scroll-fade-in" id="how">
       <img class="mark" src="assets/logos/Logo-Black.png" alt="" />
       <h2 class="section-title">HOW WE DEFEND</h2>
       <p class="lede">
@@ -56,7 +58,7 @@
     </section>
 
     <!-- DARK ROAD QUOTE -->
-    <section class="road reveal">
+    <section class="road reveal scroll-fade-in" data-lift="0" data-exit-lift="12">
       <div class="road-inner">
         <div class="road-left">They say it's straight.</div>
         <div class="road-right">We make them prove it.</div>
@@ -64,7 +66,7 @@
     </section>
 
     <!-- WHAT SHARP GETS YOU -->
-    <section class="paper-bg section reveal" id="results">
+    <section class="paper-bg section reveal scroll-fade-in" id="results">
       <img class="mark" src="assets/logos/Logo-Black.png" alt="" />
       <h2 class="section-title">WHAT SHARP GETS YOU</h2>
 
@@ -89,8 +91,11 @@
         </div>
       </div>
 
-      <!-- WHEN IT MATTERS (same section, reveals with results) -->
-      <div class="when-block" id="when">
+    </section>
+
+    <!-- WHEN IT MATTERS + WHEN IT HAS TO BE SHARP (combined finale) -->
+    <section class="section-finale reveal scroll-fade-in" id="when">
+      <div class="when-block">
         <h2 class="section-title has-rule">WHEN IT MATTERS</h2>
         <ul class="moments">
           <li>When the report becomes the version that gets believed</li>
@@ -100,12 +105,11 @@
           <li>When one decision decides everything</li>
         </ul>
       </div>
-    </section>
-
-    <section class="home-cta reveal">
-      <img class="mark" src="assets/logos/Logo-White-Mark.png" alt="" />
-      <h2 class="footer-title gold">WHEN IT HAS TO BE SHARP</h2>
-      <a class="btn btn-light footer-cta" href="contact.html">Book Consult</a>
+      <div class="finale-cta">
+        <img class="mark" src="assets/logos/Logo-White-Mark.png" alt="" />
+        <h2 class="footer-title gold">WHEN IT HAS TO BE SHARP</h2>
+        <a class="btn btn-light footer-cta" href="contact.html">Book Consult</a>
+      </div>
     </section>
 
     <div data-include="partials/footer.html?v=20260418-nav3"></div>
