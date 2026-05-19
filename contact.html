@@ -4,9 +4,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Book Consult — Koplow Defense</title>
-    <link rel="stylesheet" href="styles.css?v=20260519-3" />
+    <style>
+      html, body { margin: 0; background: #000; color: #d5d4d3; }
+      body.page-shell-boot { opacity: 0; transform: translateY(8px); }
+      body.page-shell-boot.page-shell-ready {
+        opacity: 1;
+        transform: none;
+        transition: opacity 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+          transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+    </style>
+    <link rel="stylesheet" href="styles.css?v=20260519-17" />
   </head>
-  <body class="contact-page">
+  <body class="contact-page page-shell-boot">
     <header class="dark-nav">
       <div data-include="partials/header.html?v=20260418-nav3"></div>
     </header>
@@ -14,7 +24,7 @@
     <main>
       <section class="contact-hero">
         <div class="contact-content contact-hero-grid">
-          <div class="contact-hero-copy-block">
+          <div class="contact-hero-copy-block motion-hero-sequence">
             <p class="contact-eyebrow">BOOK CONSULT</p>
             <h1 class="contact-hero-title">
               <span>WHEN IT CAN'T WAIT,</span>
@@ -34,7 +44,7 @@
             </p>
           </div>
 
-          <div class="contact-form-card">
+          <div class="contact-form-card anim-fade-up delay-3">
             <h2>REQUEST A CONSULTATION</h2>
             <p class="contact-form-intro">
               Share the basics. We’ll review the urgency and the fit.
@@ -77,8 +87,8 @@
       </section>
     </main>
 
-    <div data-include="partials/footer.html?v=20260418-nav3"></div>
+    <div data-include="partials/footer.html?v=20260519-footer1"></div>
 
-    <script src="site.js?v=20260519-2"></script>
+    <script src="site.js?v=20260519-13"></script>
   </body>
 </html>

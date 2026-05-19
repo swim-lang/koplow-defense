@@ -41,7 +41,7 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 
 html,
@@ -56,19 +56,15 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-}
-
 /* ---------- MOTION ---------- */
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    filter: blur(6px);
+    transform: translateY(30px);
   }
   to {
+    filter: blur(0);
     opacity: 1;
     transform: translateY(0);
   }
@@ -85,70 +81,56 @@ body {
 
 .anim-fade-up {
   opacity: 0;
-  animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: fadeUp 1.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: opacity, transform, filter;
 }
 
 .anim-fade-in {
   opacity: 0;
-  animation: fadeIn 1.2s ease forwards;
+  animation: fadeIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-.delay-1 { animation-delay: 0.1s; }
-.delay-2 { animation-delay: 0.25s; }
-.delay-3 { animation-delay: 0.45s; }
-.delay-4 { animation-delay: 0.7s; }
-.delay-5 { animation-delay: 0.95s; }
+.delay-1 { animation-delay: 0.18s; }
+.delay-2 { animation-delay: 0.36s; }
+.delay-3 { animation-delay: 0.54s; }
+.delay-4 { animation-delay: 0.72s; }
+.delay-5 { animation-delay: 0.9s; }
 
 .reveal {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform;
+  opacity: 1;
+  filter: none;
+  transform: none;
 }
 
 .reveal.is-visible {
   opacity: 1;
+  filter: none;
   transform: translateY(0);
-  will-change: auto;
 }
 
-/* Scroll-driven crossfade: section opacity/translate are set by JS via
-   CSS vars (--enter-opacity, --enter-translate), tying the entrance to
-   scroll position rather than a one-shot timer. Used for the section
-   that follows the hero so the cross-fade with the hero stays in sync. */
 .crossfade {
-  opacity: var(--enter-opacity, 0);
-  transform: translateY(var(--enter-translate, 16px));
-  transition: none;
-  will-change: opacity, transform;
+  filter: none;
+  transform: none;
 }
 
-.reveal.crossfade,
-.reveal.crossfade.is-visible {
-  opacity: var(--enter-opacity, 0);
-  transform: translateY(var(--enter-translate, 16px));
-  transition: none;
+@keyframes heroCascadeIn {
+  from {
+    opacity: 0;
+    filter: blur(7px);
+    transform: translateY(32px) scale(0.988);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0) scale(1);
+  }
 }
 
-/* Snap sections are narrative beats. The section itself stays fixed in the
-   document flow while inner content lands with a stronger "arrival" feel. */
-.snap-section,
-.snap-section.reveal,
-.snap-section.crossfade,
-.snap-section .anim-fade-up,
-.snap-section .anim-fade-in {
-  opacity: 1 !important;
-  transform: none !important;
-  animation: none !important;
-  transition: none !important;
-}
-
-.snap-arrival {
+.motion-stage {
   width: 100%;
 }
 
-.how-when .snap-arrival {
+.how-when .motion-stage {
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -157,7 +139,7 @@ body {
   width: 100%;
 }
 
-.how-next .snap-arrival {
+.how-next .motion-stage {
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -167,30 +149,32 @@ body {
   width: 100%;
 }
 
-body.motion-ready .snap-arrival-heading,
-body.motion-ready .snap-arrival-accent,
-body.motion-ready .snap-arrival-copy {
-  transition: none;
+body.motion-ready .motion-hero-sequence > * {
+  opacity: 0;
+  filter: blur(7px);
+  transform: translateY(32px) scale(0.988);
+  animation: heroCascadeIn 1.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: opacity, transform, filter;
 }
 
-body.motion-ready .snap-arrival-heading {
-  opacity: var(--snap-heading-opacity, 0);
-  transform: translate3d(0, var(--snap-heading-translate, 0px), 0)
-    scale(var(--snap-heading-scale, 1));
-  transform-origin: center top;
+body.motion-ready .motion-hero-sequence > :nth-child(1) { animation-delay: 0.12s; }
+body.motion-ready .motion-hero-sequence > :nth-child(2) { animation-delay: 0.28s; }
+body.motion-ready .motion-hero-sequence > :nth-child(3) { animation-delay: 0.44s; }
+body.motion-ready .motion-hero-sequence > :nth-child(4) { animation-delay: 0.6s; }
+body.motion-ready .motion-hero-sequence > :nth-child(5) { animation-delay: 0.76s; }
+
+body.page-transition-enabled > * {
+  transition: opacity 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-body.motion-ready .snap-arrival-accent {
-  opacity: var(--snap-accent-opacity, 0);
-  filter: blur(var(--snap-accent-blur, 0px));
-  transform: translate3d(0, var(--snap-accent-translate, 0px), 0);
+body.is-page-leaving {
+  overflow: hidden;
 }
 
-body.motion-ready .snap-arrival-copy {
-  opacity: var(--snap-copy-opacity, 0);
-  filter: blur(var(--snap-copy-blur, 0px));
-  transform: translate3d(0, var(--snap-copy-translate, 0px), 0);
+body.is-page-leaving > * {
+  opacity: 0.18;
+  transform: translateY(14px);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -198,21 +182,27 @@ body.motion-ready .snap-arrival-copy {
   .anim-fade-in,
   .reveal,
   .crossfade,
-  .snap-section {
+  .motion-stack > *,
+  .motion-hero-sequence > *,
+  .motion-stagger-item {
     opacity: 1 !important;
+    filter: none !important;
     transform: none !important;
     animation: none !important;
     transition: none !important;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .anim-fade-up,
   .anim-fade-in,
   .reveal,
   .crossfade,
-  .snap-section {
+  .motion-stack > *,
+  .motion-hero-sequence > *,
+  .motion-stagger-item {
     opacity: 1 !important;
+    filter: none !important;
     transform: none !important;
     animation: none !important;
     transition: none !important;
@@ -251,16 +241,20 @@ a {
   flex-direction: column;
   align-items: center;
   opacity: var(--hero-fade-opacity, 1);
-  transform: translateY(var(--hero-fade-translate, 0));
-  will-change: opacity, transform;
+  filter: blur(var(--hero-fade-blur, 0px));
+  transform: translateY(var(--hero-fade-translate, 0))
+    scale(var(--hero-fade-scale, 1));
+  will-change: opacity, transform, filter;
 }
 
 /* Page-agnostic hero scroll-out: any element marked [data-hero-content]
    participates regardless of layout class. */
 [data-hero-content] {
   opacity: var(--hero-fade-opacity, 1);
-  transform: translateY(var(--hero-fade-translate, 0));
-  will-change: opacity, transform;
+  filter: blur(var(--hero-fade-blur, 0px));
+  transform: translateY(var(--hero-fade-translate, 0))
+    scale(var(--hero-fade-scale, 1));
+  will-change: opacity, transform, filter;
 }
 
 .nav {
@@ -485,6 +479,112 @@ a {
   max-width: 1000px;
 }
 
+.reveal .motion-stack > * {
+  opacity: 0;
+  filter: blur(6.5px);
+  transform: translateY(42px) scale(0.987);
+  transition: opacity 1.32s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 1.32s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.32s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform, filter;
+}
+
+.reveal .motion-stack > :is(
+    p,
+    ul,
+    ol,
+    .how-next-copy,
+    .pull-quote-supporting,
+    .tactical-body,
+    .criminal-starts-close,
+    .criminal-feature-block,
+    .ethics-precision-list,
+    .ethics-process-note,
+    .ethics-advisory-emphasis,
+    .bio-text,
+    .contact-form-intro,
+    .contact-hero-copy,
+    .contact-hero-points,
+    .contact-office-note
+  ) {
+  filter: blur(4px);
+  transform: translateY(30px) scale(0.99);
+  transition: opacity 1.18s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 1.18s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal .tactical-text > *,
+.reveal .criminal-feature-copy > *,
+.reveal .how-pressure-title > *,
+.reveal .pull-quote-body > *,
+.reveal .ethics-framing > * {
+  filter: blur(5px);
+  transform: translateY(34px) scale(0.988);
+  transition: opacity 1.28s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 1.28s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal .section-title,
+.reveal .how-when-title,
+.reveal .how-next-title,
+.reveal .ethics-decider h2,
+.reveal .how-header h2,
+.reveal .cases-turn h2,
+.reveal .criminal-turn h2,
+.reveal .how-cta-headline {
+  filter: blur(6px);
+  transform: translateY(48px) scale(0.985);
+  transition: opacity 1.42s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 1.42s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal .ethics-profile-copy.motion-stack > * {
+  opacity: 0;
+  filter: blur(4.5px);
+  transform: translateY(28px) scale(0.991);
+  transition: opacity 1.16s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 1.16s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.16s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.section.motion-stack > .mark,
+.reveal.section.motion-stack > .section-title,
+.reveal.cases-break.motion-stack > .mark,
+.reveal.cases-break.motion-stack > h2,
+.reveal.cases-turn.motion-stack > h2,
+.reveal.how-header.motion-stack > h2,
+.reveal.ethics-decider.motion-stack > h2 {
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(-34px) scale(0.985);
+  transition: opacity 1.42s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 1.42s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal .col,
+.reveal .motion-stagger-item {
+  opacity: 0;
+  filter: blur(5px);
+  transition: opacity 1.24s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 1.24s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.24s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform, filter;
+}
+
+.reveal .col:nth-child(odd),
+.reveal .motion-stagger-item:nth-child(odd) {
+  transform: translateY(36px) scale(0.99);
+}
+
+.reveal .col:nth-child(even),
+.reveal .motion-stagger-item:nth-child(even) {
+  transform: translateY(-24px) scale(0.99);
+}
+
 .col {
   flex: 1;
   padding: 0 40px;
@@ -493,31 +593,53 @@ a {
   align-items: flex-start;
   text-align: left;
   gap: 20px;
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Stagger fires once the scroll-driven cross-fade has visibly begun. */
-.crossfade.in-view .col,
-.reveal.is-visible:not(.crossfade) .col {
+.reveal.is-visible .col,
+.reveal.is-visible .motion-stagger-item,
+.reveal.is-visible .motion-stack > *,
+.reveal.is-visible.motion-stack > *,
+.reveal.is-visible .ethics-profile-copy.motion-stack > * {
   opacity: 1;
-  transform: translateY(0);
+  filter: none;
+  transform: translateY(0) scale(1);
 }
 
-.crossfade.in-view .col:nth-child(1),
-.reveal.is-visible:not(.crossfade) .col:nth-child(1) { transition-delay: 0.10s; }
-.crossfade.in-view .col:nth-child(2),
-.reveal.is-visible:not(.crossfade) .col:nth-child(2) { transition-delay: 0.25s; }
-.crossfade.in-view .col:nth-child(3),
-.reveal.is-visible:not(.crossfade) .col:nth-child(3) { transition-delay: 0.40s; }
-
-.snap-section .col {
+.reveal.is-visible.section.motion-stack > .mark,
+.reveal.is-visible.section.motion-stack > .section-title,
+.reveal.is-visible.cases-break.motion-stack > .mark,
+.reveal.is-visible.cases-break.motion-stack > h2,
+.reveal.is-visible.cases-turn.motion-stack > h2,
+.reveal.is-visible.how-header.motion-stack > h2,
+.reveal.is-visible.ethics-decider.motion-stack > h2,
+.reveal.is-visible .ethics-profile-copy.motion-stack > * {
   opacity: 1 !important;
-  transform: none !important;
-  transition: none !important;
+  filter: none !important;
+  transform: translateY(0) scale(1) !important;
 }
+
+.reveal.is-visible .motion-stack > :nth-child(1),
+.reveal.is-visible.motion-stack > :nth-child(1) { transition-delay: 0.18s; }
+.reveal.is-visible .motion-stack > :nth-child(2),
+.reveal.is-visible.motion-stack > :nth-child(2) { transition-delay: 0.36s; }
+.reveal.is-visible .motion-stack > :nth-child(3),
+.reveal.is-visible.motion-stack > :nth-child(3) { transition-delay: 0.54s; }
+.reveal.is-visible .motion-stack > :nth-child(4),
+.reveal.is-visible.motion-stack > :nth-child(4) { transition-delay: 0.72s; }
+.reveal.is-visible .motion-stack > :nth-child(5),
+.reveal.is-visible.motion-stack > :nth-child(5) { transition-delay: 0.9s; }
+.reveal.is-visible .motion-stack > :nth-child(6),
+.reveal.is-visible.motion-stack > :nth-child(6) { transition-delay: 1.08s; }
+
+.reveal.is-visible .col:nth-child(1),
+.reveal.is-visible .motion-stagger-item:nth-child(1) { transition-delay: 0.12s; }
+.reveal.is-visible .col:nth-child(2),
+.reveal.is-visible .motion-stagger-item:nth-child(2) { transition-delay: 0.24s; }
+.reveal.is-visible .col:nth-child(3),
+.reveal.is-visible .motion-stagger-item:nth-child(3) { transition-delay: 0.36s; }
+.reveal.is-visible .motion-stagger-item:nth-child(4) { transition-delay: 0.48s; }
+.reveal.is-visible .motion-stagger-item:nth-child(5) { transition-delay: 0.6s; }
+.reveal.is-visible .motion-stagger-item:nth-child(6) { transition-delay: 0.72s; }
 
 .col + .col {
   border-left: 1px solid var(--divider);
@@ -782,7 +904,7 @@ a {
   z-index: 100;
   background: #000;
   color: var(--white);
-  display: flex;
+  display: none;
   flex-direction: column;
   opacity: 0;
   visibility: hidden;
@@ -793,6 +915,7 @@ a {
 }
 
 .mobile-menu.is-open {
+  display: flex;
   opacity: 1;
   visibility: visible;
   pointer-events: auto;

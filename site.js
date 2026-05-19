@@ -2,6 +2,13 @@
 // Handles partial includes, mobile menu, and reveal-on-scroll.
 
 (async function () {
+  if (document.body) {
+    document.body.classList.add("page-shell-ready");
+    window.setTimeout(() => {
+      document.body.classList.remove("page-shell-boot");
+    }, 520);
+  }
+
   // ---------- Include partials ----------
   // Any element with data-include="path.html" gets replaced by that file's contents.
   const includeEls = Array.from(document.querySelectorAll("[data-include]"));
@@ -56,11 +63,78 @@
     if (e.key === "Escape" && menu?.classList.contains("is-open")) closeMenu();
   });
 
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+
+  // ---------- Page transitions ----------
+  const initPageTransitions = () => {
+    if (prefersReducedMotion) return;
+
+    document.body.classList.add("page-transition-enabled");
+
+    let leaving = false;
+    const normalizePath = (pathname) =>
+      pathname.replace(/\/index\.html$/, "/").replace(/\/+$/, "/");
+    const currentPath = normalizePath(window.location.pathname);
+
+    const shouldHandlePageLink = (anchor, event) => {
+      if (event.defaultPrevented || leaving) return false;
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+        return false;
+      }
+
+      const rawHref = anchor.getAttribute("href");
+      if (!rawHref) return false;
+      if (/^(#|mailto:|tel:|javascript:)/i.test(rawHref)) return false;
+      if (anchor.hasAttribute("download")) return false;
+
+      const target = anchor.getAttribute("target");
+      if (target && target.toLowerCase() !== "_self") return false;
+
+      const url = new URL(anchor.href, window.location.href);
+      if (url.origin !== window.location.origin) return false;
+
+      const nextPath = normalizePath(url.pathname);
+      const currentSearch = window.location.search || "";
+      if (nextPath === currentPath && url.search === currentSearch) {
+        return false;
+      }
+
+      return url.pathname === "/" || url.pathname.endsWith(".html");
+    };
+
+    document.querySelectorAll('a[href]').forEach((anchor) => {
+      anchor.addEventListener(
+        "click",
+        (event) => {
+          if (!shouldHandlePageLink(anchor, event)) return;
+
+          event.preventDefault();
+          leaving = true;
+          closeMenu();
+          document.body.classList.add("is-page-leaving");
+
+          window.setTimeout(() => {
+            window.location.href = anchor.href;
+          }, 220);
+        },
+        true
+      );
+    });
+
+    window.addEventListener("pageshow", () => {
+      leaving = false;
+      document.body.classList.remove("is-page-leaving");
+    });
+  };
+
+  initPageTransitions();
+
   // ---------- Reveal on scroll ----------
   const revealEls = Array.from(document.querySelectorAll(".reveal"));
   const disableScrollReveal =
-    window.matchMedia("(max-width: 768px)").matches ||
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.matchMedia("(max-width: 1024px)").matches || prefersReducedMotion;
 
   if (disableScrollReveal) {
     revealEls.forEach((el) => el.classList.add("is-visible"));
@@ -76,162 +150,54 @@
         }
       });
     },
-    { threshold: 0, rootMargin: "0px 0px -12% 0px" }
+    { threshold: 0.1, rootMargin: "0px 0px -18% 0px" }
   );
   revealEls.forEach((el) => io.observe(el));
 
-  // ---------- Scroll-driven cross-fades ----------
-  // Sections marked .crossfade get their opacity/translate set from
-  // scroll position so adjacent sections cross-fade smoothly instead of
-  // hard-cutting. Sections also fade out as they exit the viewport so the
-  // handoff to the next section feels continuous.
+  // ---------- Desktop motion ----------
+  // Native scroll with section reveals. The hero keeps a more cinematic
+  // scroll-out, but section transitions themselves are activated by
+  // IntersectionObserver rather than scroll locking.
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-  const ease = (x) => x * x * (3 - 2 * x); // smoothstep
 
-  // Any element marked with [data-hero-content] gets the scroll-out fade;
-  // its enclosing <section> is treated as the hero for height/timing.
-  // Falls back to the home page convention (.hero .hero-content) so existing
-  // pages keep working.
+  document.body.classList.add("motion-ready");
+
   const heroContent =
     document.querySelector("[data-hero-content]") ||
     document.querySelector(".hero .hero-content");
   const hero = heroContent?.closest("section") || document.querySelector(".hero");
-  const fadeSections = Array.from(document.querySelectorAll(".crossfade"));
-  const snapArrivals = Array.from(document.querySelectorAll(".snap-arrival"));
+  if (!heroContent || !hero) return;
 
-  if (heroContent || fadeSections.length || snapArrivals.length) {
-    document.body.classList.add("motion-ready");
-    let frame = 0;
-    const magneticEase = (x) => {
-      if (x <= 0.68) return x * 0.52;
-      const late = clamp((x - 0.68) / 0.32, 0, 1);
-      return 0.3536 + ease(late) * 0.6464;
-    };
+  let frame = 0;
+  const applyHero = () => {
+    frame = 0;
+    const heroH = hero.offsetHeight || 1;
+    const y = window.scrollY;
+    const tHeroOut = clamp((y - heroH * 0.08) / (heroH * 0.72), 0, 1);
 
-    const apply = () => {
-      frame = 0;
-      const winH = window.innerHeight;
-      const y = window.scrollY;
+    heroContent.style.setProperty(
+      "--hero-fade-opacity",
+      String(Math.max(0.44, 1 - tHeroOut * 0.56))
+    );
+    heroContent.style.setProperty(
+      "--hero-fade-translate",
+      `${-tHeroOut * 44}px`
+    );
+    heroContent.style.setProperty(
+      "--hero-fade-scale",
+      String(1 - tHeroOut * 0.022)
+    );
+    heroContent.style.setProperty(
+      "--hero-fade-blur",
+      `${tHeroOut * 1.65}px`
+    );
+  };
 
-      // Hero scroll-out (fades the hero's inner content as you leave it).
-      if (heroContent && hero) {
-        const heroH = hero.offsetHeight || 1;
-        const tHeroOut = clamp((y - heroH * 0.1) / (heroH * 0.75), 0, 1);
-        heroContent.style.setProperty(
-          "--hero-fade-opacity",
-          String(1 - tHeroOut)
-        );
-        heroContent.style.setProperty(
-          "--hero-fade-translate",
-          `${-tHeroOut * 24}px`
-        );
-      }
-
-      // For each scroll-fade section: enter as it scrolls into view from
-      // below, and gently fade out as it leaves the top of the viewport.
-      // The first fade-in section (immediately after the hero) is keyed off
-      // the hero's scroll-out so the two motions stay synchronized.
-      fadeSections.forEach((sec, idx) => {
-        const rect = sec.getBoundingClientRect();
-        const nextSection = sec.nextElementSibling;
-        const successorIsSnap = nextSection?.classList.contains("snap-section");
-        const hasSuccessor =
-          nextSection?.classList.contains("crossfade") || successorIsSnap;
-        // Per-section motion controls:
-        //   data-lift="N"       — entry translateY in px (default 16, upward).
-        //   data-exit-lift="N"  — exit translateY in px (default -12, upward).
-        // Positive values translate downward; negative translate upward.
-        const enterLift =
-          sec.dataset.lift != null ? Number(sec.dataset.lift) : 16;
-        const exitLift =
-          sec.dataset.exitLift != null ? Number(sec.dataset.exitLift) : -12;
-
-        let tIn;
-        if (idx === 0 && hero) {
-          // Coordinate with hero scroll-out.
-          const heroH = hero.offsetHeight || 1;
-          tIn = ease(clamp((y - heroH * 0.35) / (heroH * 0.6), 0, 1));
-        } else {
-          // Generic: extend the entry window so the cross-fade overlaps
-          // longer with the prior section's exit — the section feels like
-          // it's already there coming into focus, not arriving.
-          const enterStart = winH * 1.1;
-          const enterEnd = winH * 0.15;
-          tIn = ease(
-            clamp((enterStart - rect.top) / (enterStart - enterEnd), 0, 1)
-          );
-        }
-
-        // Exit fade runs when the next section is another managed handoff,
-        // whether that next moment cross-fades or settles in as a snap stop.
-        let tOut = 0;
-        if (hasSuccessor) {
-          const exitStart = successorIsSnap ? winH * 0.74 : winH * 0.6;
-          tOut = clamp((exitStart - rect.bottom) / exitStart, 0, 1);
-        }
-
-        const opacity = Math.min(tIn, 1 - tOut);
-        const translate = (1 - tIn) * enterLift + tOut * exitLift;
-        sec.style.setProperty("--enter-opacity", String(opacity));
-        sec.style.setProperty("--enter-translate", `${translate}px`);
-
-        if (tIn > 0.35) sec.classList.add("in-view");
-      });
-
-      snapArrivals.forEach((wrapper) => {
-        const section = wrapper.closest(".snap-section");
-        if (!section) return;
-
-        const rect = section.getBoundingClientRect();
-        const enterStart = winH * 0.98;
-        const enterEnd = winH * 0.18;
-        const raw = clamp(
-          (enterStart - rect.top) / (enterStart - enterEnd),
-          0,
-          1
-        );
-        const progress = magneticEase(raw);
-        const heading = ease(progress);
-        const accent = ease(clamp((progress - 0.1) / 0.9, 0, 1));
-        const copy = ease(clamp((progress - 0.22) / 0.78, 0, 1));
-
-        wrapper.style.setProperty("--snap-heading-opacity", String(heading));
-        wrapper.style.setProperty(
-          "--snap-heading-translate",
-          `${(1 - heading) * 12}px`
-        );
-        wrapper.style.setProperty(
-          "--snap-heading-scale",
-          String(0.985 + heading * 0.015)
-        );
-
-        wrapper.style.setProperty("--snap-accent-opacity", String(accent));
-        wrapper.style.setProperty(
-          "--snap-accent-translate",
-          `${(1 - accent) * 10}px`
-        );
-        wrapper.style.setProperty(
-          "--snap-accent-blur",
-          `${(1 - accent) * 1.8}px`
-        );
-
-        wrapper.style.setProperty("--snap-copy-opacity", String(copy));
-        wrapper.style.setProperty(
-          "--snap-copy-translate",
-          `${(1 - copy) * 16}px`
-        );
-        wrapper.style.setProperty(
-          "--snap-copy-blur",
-          `${(1 - copy) * 4}px`
-        );
-      });
-    };
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(apply);
-    };
-    document.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-    apply();
-  }
+  const onScroll = () => {
+    if (!frame) frame = requestAnimationFrame(applyHero);
+  };
+  document.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll, { passive: true });
+  applyHero();
 
 })();

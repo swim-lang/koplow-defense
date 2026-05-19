@@ -4,9 +4,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>How We Defend — Koplow Defense</title>
-    <link rel="stylesheet" href="styles.css?v=20260519-3" />
+    <style>
+      html, body { margin: 0; background: #000; color: #d5d4d3; }
+      body.page-shell-boot { opacity: 0; transform: translateY(8px); }
+      body.page-shell-boot.page-shell-ready {
+        opacity: 1;
+        transform: none;
+        transition: opacity 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+          transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+    </style>
+    <link rel="stylesheet" href="styles.css?v=20260519-17" />
   </head>
-  <body class="how-page">
+  <body class="how-page page-shell-boot">
     <header class="dark-nav">
       <div data-include="partials/header.html?v=20260418-nav3"></div>
     </header>
@@ -21,7 +31,7 @@
           role="img"
           aria-label="Pencil tip cutting into a dark surface"
         >
-          <div class="how-hero-copy" data-hero-content>
+          <div class="how-hero-copy motion-hero-sequence" data-hero-content>
             <h1 class="how-hero-title">
               <span>CASES DON'T BREAK ON</span>
               <span>THEIR OWN.</span>
@@ -29,7 +39,7 @@
             </h1>
             <p class="how-hero-sub">Precisely. Deliberately.</p>
           </div>
-          <div class="section-chevron how-hero-chevron" aria-hidden="true">
+          <div class="section-chevron how-hero-chevron anim-fade-up delay-4" aria-hidden="true">
             <svg width="28" height="10" viewBox="0 0 28 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L14 9L27 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
         </div>
@@ -37,28 +47,28 @@
 
       <!-- WHERE CASES TURN -->
       <section
-        class="how-where reveal crossfade"
+        class="how-where reveal crossfade motion-stack"
         data-photo="assets/photos/Koplow How Page/Section 2.png"
         style="--photo-url: url('assets/photos/Koplow%20How%20Page/Section%202.png')"
       >
         <p class="how-where-eyebrow">Where Cases Turn</p>
         <div class="how-where-grid">
-          <article class="how-where-item">
+          <article class="how-where-item motion-stagger-item">
             <h3 class="gold">EVIDENCE</h3>
             <p>It's not what's claimed.</p>
             <p><strong>It's what holds under pressure.</strong></p>
           </article>
-          <article class="how-where-item">
+          <article class="how-where-item motion-stagger-item">
             <h3 class="gold">METHOD</h3>
             <p>How it's tested</p>
             <p><strong>Determines what survives.</strong></p>
           </article>
-          <article class="how-where-item">
+          <article class="how-where-item motion-stagger-item">
             <h3 class="gold">ASSUMPTIONS</h3>
             <p>What goes unchallenged</p>
             <p><strong>Becomes the case.</strong></p>
           </article>
-          <article class="how-where-item">
+          <article class="how-where-item motion-stagger-item">
             <h3 class="gold">PRESSURE POINTS</h3>
             <p>Where pressure is applied</p>
             <p><strong>Determines what breaks.</strong></p>
@@ -76,7 +86,7 @@
         aria-label="Hand crushing ice in darkness"
       >
         <div class="how-pressure-inner">
-          <h2 class="how-pressure-title">
+          <h2 class="how-pressure-title motion-stack">
             <span>PRESSURE REVEALS</span>
             <span>WHAT THEY <span class="gold">REFUSE</span></span>
             <span class="gold">TO SEE</span>
@@ -85,47 +95,45 @@
       </section>
 
       <!-- WHEN IT MATTERS -->
-      <section class="how-when snap-section">
-        <div class="snap-arrival">
-          <div class="how-when-inner">
-            <h2 class="how-when-title snap-arrival-heading">WHEN IT MATTERS…</h2>
-            <ul class="how-when-list snap-arrival-copy">
-              <li>When their version is <span class="gold">already taking hold.</span></li>
-              <li>When the evidence looks <span class="gold">stronger than it should.</span></li>
-              <li>When one decision <span class="gold">defines everything.</span></li>
+      <section class="how-when reveal crossfade">
+        <div class="how-when-inner motion-stage motion-stack">
+            <h2 class="how-when-title">WHEN IT MATTERS…</h2>
+            <ul class="how-when-list">
+              <li class="motion-stagger-item">When their version is <span class="gold">already taking hold.</span></li>
+              <li class="motion-stagger-item">When the evidence looks <span class="gold">stronger than it should.</span></li>
+              <li class="motion-stagger-item">When one decision <span class="gold">defines everything.</span></li>
             </ul>
-          </div>
-          <div class="section-chevron snap-arrival-accent" aria-hidden="true">
+          <div class="section-chevron motion-stagger-item" aria-hidden="true">
             <svg width="28" height="10" viewBox="0 0 28 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L14 9L27 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
         </div>
       </section>
 
       <!-- WHAT HAPPENS NEXT / DECISION BLOCK -->
-      <section class="paper-bg how-next snap-section">
-        <div class="snap-arrival">
-          <h2 class="how-next-title snap-arrival-heading">WHAT HAPPENS NEXT</h2>
-          <div class="section-chevron how-next-chevron snap-arrival-accent" aria-hidden="true">
+      <section class="paper-bg how-next reveal crossfade">
+        <div class="motion-stage motion-stack">
+          <h2 class="how-next-title motion-stagger-item">WHAT HAPPENS NEXT</h2>
+          <div class="section-chevron how-next-chevron motion-stagger-item" aria-hidden="true">
             <svg width="28" height="10" viewBox="0 0 28 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L14 9L27 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
-          <hr class="how-next-rule snap-arrival-accent" />
-          <div class="how-next-copy snap-arrival-copy">
-            <p>You don't get to choose <strong class="gold">when</strong> it starts.</p>
-            <p>You do get to choose <strong class="gold">how</strong> it's handled.</p>
+          <hr class="how-next-rule motion-stagger-item" />
+          <div class="how-next-copy">
+            <p class="motion-stagger-item">You don't get to choose <strong class="gold">when</strong> it starts.</p>
+            <p class="motion-stagger-item">You do get to choose <strong class="gold">how</strong> it's handled.</p>
           </div>
         </div>
       </section>
 
       <!-- CTA -->
-      <section class="how-cta reveal crossfade">
+      <section class="how-cta reveal crossfade motion-stack">
         <img class="mark" src="assets/logos/Logo-White-Mark.png" alt="" />
         <h2 class="how-cta-headline gold">WHEN IT HAS TO BE SHARP</h2>
         <a class="btn how-outline-btn" href="contact.html">Book Consult</a>
       </section>
     </main>
 
-    <div data-include="partials/footer.html?v=20260418-nav3"></div>
+    <div data-include="partials/footer.html?v=20260519-footer1"></div>
 
-    <script src="site.js?v=20260519-2"></script>
+    <script src="site.js?v=20260519-13"></script>
   </body>
 </html>
