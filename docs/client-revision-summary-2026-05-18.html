@@ -183,18 +183,18 @@
         <h1>Revision Summary And Source Reconciliation</h1>
         <p class="lede">
           This note explains what was revised on the site, how the motion direction was interpreted,
-          and where the revision PDF differed from the original design source files that were already
-          in use before the PDF arrived.
+          and where the revision PDF expanded on the original design files that were already
+          in use when the feedback came back.
         </p>
 
         <div class="cards">
           <article class="card">
             <h3>Source Materials</h3>
-            <p>The revision PDF, the original design files provided for the project, and the May site history were reviewed together.</p>
+            <p>The revision PDF and the original design files provided for the project were reviewed against the existing site build.</p>
           </article>
           <article class="card">
             <h3>Short Version</h3>
-            <p>The PDF added more specific flow and motion direction than the original design layouts showed, so some decisions required reconciling both sources.</p>
+            <p>We started from the original design files, and the PDF then introduced homepage beats and motion direction that were more developed than what those source layouts showed at that moment.</p>
           </article>
         </div>
       </section>
@@ -215,6 +215,7 @@
         <p>
           The PDF uses terms like <strong>snap</strong> to describe how certain sections should feel, but the
           feedback does not appear to call for literal viewport locking or browser-style scroll capture.
+          In other words, the section should feel like it arrives decisively, not like the browser is taking over the scroll.
         </p>
         <p>
           A literal viewport snap was tested and proved too aggressive. It made scrolling feel trapped,
@@ -224,8 +225,9 @@
         <div class="callout">
           <p>
             For that reason, the current implementation interprets <strong>snap</strong> as a stronger
-            section arrival rather than a locked viewport behavior. In practice, that means the content
-            lands more decisively under normal scrolling, but the page itself never takes control away from the user.
+            section arrival, or a more magnetic landing, rather than a locked viewport behavior. In practice,
+            that means the content lands more decisively under normal scrolling, but the page itself never
+            takes control away from the user.
           </p>
         </div>
         <p>
@@ -236,7 +238,7 @@
       </section>
 
       <section class="section">
-        <h2>Where The Design File And PDF Differed</h2>
+        <h2>Where The Design Files And PDF Differed</h2>
         <p>
           The design files available for this phase contain desktop layouts for <strong>Home</strong> and
           <strong>About</strong>, plus menu and stylesheet references. They do <strong>not</strong> contain
@@ -246,60 +248,18 @@
         <p>
           That matters because the PDF gives explicit motion and sequencing direction for those pages, but there
           is not a matching set of desktop layouts in the provided design files to compare against one-to-one.
+          On the homepage in particular, the PDF called out beats that did not yet exist as standalone sections
+          in the original source layout, so those notes had to be treated as new design direction, not only as revision markup.
         </p>
         <ul>
           <li><strong>Home design layout:</strong> originally showed Hero → How We Defend → image bridge → What Sharp Gets You → a light/gray <strong>When It Matters</strong> section → a separate dark CTA/footer section.</li>
           <li><strong>Home PDF notes:</strong> introduced a more explicit lower-page narrative sequence, including <strong>What Happens Next</strong> and a distinct decision-block moment that do not appear as standalone sections in the original home layout.</li>
+          <li><strong>Practical effect:</strong> this meant the homepage notes were read not just as edits to existing blocks, but as additional directional design input for how that lower-page sequence should evolve.</li>
           <li><strong>About:</strong> the design files and PDF are much closer to one another, with the PDF mainly refining transitions and the integrated bio treatment.</li>
           <li><strong>Criminal / Ethics / How:</strong> these required more reconciliation because the PDF provided direction that was not fully mirrored by the design files available for review.</li>
         </ul>
       </section>
 
-      <section class="section">
-        <h2>What The May Site History Clarified</h2>
-        <p>
-          The May site history shows that the newer <strong>How</strong> page was added during that revision period,
-          while some of the lower-page beat language being discussed later did not exist in the older homepage structure
-          in the same way.
-        </p>
-        <p>
-          In other words, the PDF was not simply restating the exact same state shown in the older source files.
-          It introduced newer direction, especially around lower-page sequencing and motion emphasis.
-        </p>
-      </section>
-
-      <section class="section">
-        <h2>Best Way To Describe The Work</h2>
-        <p>
-          The cleanest explanation is that the original design files were treated as the baseline for page composition
-          where equivalent layouts existed, while the PDF was treated as the latest source of revision intent.
-        </p>
-        <div class="callout">
-          <p>
-            Where those two sources aligned, the site followed them directly. Where the PDF introduced structure or
-            motion ideas that were more specific than the original design layouts, the implementation required a reconciliation
-            decision rather than a simple one-source execution.
-          </p>
-        </div>
-      </section>
-
-      <section class="section">
-        <h2>Recommended Working Rule Going Forward</h2>
-        <ol>
-          <li>Treat the PDF as the source of truth for new revision intent.</li>
-          <li>Treat the original design files as the source of truth for original page composition where equivalent layouts exist.</li>
-          <li>Treat scroll-feel notes such as <strong>snap</strong> as descriptive motion direction unless a literal technical behavior is explicitly required.</li>
-          <li>Flag any place where the PDF introduces a new section or sequence not represented in the design file as a reconciliation decision.</li>
-        </ol>
-      </section>
-
-      <section class="foot">
-        <h2>Internal Note</h2>
-        <p>
-          This HTML file is the consolidated client-viewable summary. The earlier markdown notes are retained as internal
-          working drafts that fed into this final version.
-        </p>
-      </section>
     </main>
   </body>
 </html>
