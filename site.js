@@ -96,12 +96,18 @@
     document.querySelector("[data-hero-content]") ||
     document.querySelector(".hero .hero-content");
   const hero = heroContent?.closest("section") || document.querySelector(".hero");
-  const fadeSections = Array.from(
-    document.querySelectorAll(".crossfade")
-  );
+  const fadeSections = Array.from(document.querySelectorAll(".crossfade"));
+  const snapArrivals = Array.from(document.querySelectorAll(".snap-arrival"));
 
-  if (heroContent || fadeSections.length) {
+  if (heroContent || fadeSections.length || snapArrivals.length) {
+    document.body.classList.add("motion-ready");
     let frame = 0;
+    const magneticEase = (x) => {
+      if (x <= 0.68) return x * 0.52;
+      const late = clamp((x - 0.68) / 0.32, 0, 1);
+      return 0.3536 + ease(late) * 0.6464;
+    };
+
     const apply = () => {
       frame = 0;
       const winH = window.innerHeight;
@@ -128,9 +134,9 @@
       fadeSections.forEach((sec, idx) => {
         const rect = sec.getBoundingClientRect();
         const nextSection = sec.nextElementSibling;
+        const successorIsSnap = nextSection?.classList.contains("snap-section");
         const hasSuccessor =
-          nextSection?.classList.contains("crossfade") ||
-          nextSection?.classList.contains("snap-section");
+          nextSection?.classList.contains("crossfade") || successorIsSnap;
         // Per-section motion controls:
         //   data-lift="N"       — entry translateY in px (default 16, upward).
         //   data-exit-lift="N"  — exit translateY in px (default -12, upward).
@@ -160,7 +166,7 @@
         // whether that next moment cross-fades or settles in as a snap stop.
         let tOut = 0;
         if (hasSuccessor) {
-          const exitStart = winH * 0.6;
+          const exitStart = successorIsSnap ? winH * 0.74 : winH * 0.6;
           tOut = clamp((exitStart - rect.bottom) / exitStart, 0, 1);
         }
 
@@ -171,6 +177,54 @@
 
         if (tIn > 0.35) sec.classList.add("in-view");
       });
+
+      snapArrivals.forEach((wrapper) => {
+        const section = wrapper.closest(".snap-section");
+        if (!section) return;
+
+        const rect = section.getBoundingClientRect();
+        const enterStart = winH * 0.98;
+        const enterEnd = winH * 0.18;
+        const raw = clamp(
+          (enterStart - rect.top) / (enterStart - enterEnd),
+          0,
+          1
+        );
+        const progress = magneticEase(raw);
+        const heading = ease(progress);
+        const accent = ease(clamp((progress - 0.1) / 0.9, 0, 1));
+        const copy = ease(clamp((progress - 0.22) / 0.78, 0, 1));
+
+        wrapper.style.setProperty("--snap-heading-opacity", String(heading));
+        wrapper.style.setProperty(
+          "--snap-heading-translate",
+          `${(1 - heading) * 12}px`
+        );
+        wrapper.style.setProperty(
+          "--snap-heading-scale",
+          String(0.985 + heading * 0.015)
+        );
+
+        wrapper.style.setProperty("--snap-accent-opacity", String(accent));
+        wrapper.style.setProperty(
+          "--snap-accent-translate",
+          `${(1 - accent) * 10}px`
+        );
+        wrapper.style.setProperty(
+          "--snap-accent-blur",
+          `${(1 - accent) * 1.8}px`
+        );
+
+        wrapper.style.setProperty("--snap-copy-opacity", String(copy));
+        wrapper.style.setProperty(
+          "--snap-copy-translate",
+          `${(1 - copy) * 16}px`
+        );
+        wrapper.style.setProperty(
+          "--snap-copy-blur",
+          `${(1 - copy) * 4}px`
+        );
+      });
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(apply);
@@ -180,100 +234,4 @@
     apply();
   }
 
-  // ---------- Soft snap settling ----------
-  // The client wanted a gentle "arrival" on a few key sections, but native
-  // CSS scroll snapping can hijack scroll feel in some browsers/webviews and
-  // behave more like a lock than a nudge. Instead, wait until scrolling
-  // pauses and only then softly settle a nearby snap section into place.
-  const snapSections = Array.from(document.querySelectorAll(".snap-section"));
-  const disableSoftSnap =
-    snapSections.length === 0 ||
-    window.matchMedia("(max-width: 768px)").matches ||
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  if (!disableSoftSnap) {
-    let snapTimer = 0;
-    let snapSettling = false;
-    let snapSuppressUntil = 0;
-
-    const cancelSoftSnap = () => {
-      clearTimeout(snapTimer);
-      snapSettling = false;
-      snapSuppressUntil = performance.now() + 400;
-    };
-
-    const getSnapCandidate = () => {
-      const vh = window.innerHeight;
-      const bandTop = -vh * 0.12;
-      const bandBottom = vh * 0.28;
-
-      return snapSections
-        .map((section) => ({
-          section,
-          top: section.getBoundingClientRect().top,
-        }))
-        .filter(({ top }) => top >= bandTop && top <= bandBottom)
-        .sort((a, b) => Math.abs(a.top) - Math.abs(b.top))[0];
-    };
-
-    const waitForSettle = () => {
-      let lastY = window.scrollY;
-      let stableFrames = 0;
-      let checks = 0;
-
-      const poll = () => {
-        checks += 1;
-        const nextY = window.scrollY;
-        if (Math.abs(nextY - lastY) < 2) {
-          stableFrames += 1;
-        } else {
-          stableFrames = 0;
-        }
-        lastY = nextY;
-
-        if (stableFrames >= 3 || checks >= 30) {
-          snapSettling = false;
-          snapSuppressUntil = performance.now() + 250;
-          return;
-        }
-
-        window.setTimeout(poll, 50);
-      };
-
-      window.setTimeout(poll, 50);
-    };
-
-    const settleSoftSnap = () => {
-      if (snapSettling) return;
-      if (performance.now() < snapSuppressUntil) {
-        clearTimeout(snapTimer);
-        snapTimer = window.setTimeout(
-          settleSoftSnap,
-          Math.max(40, snapSuppressUntil - performance.now() + 20)
-        );
-        return;
-      }
-
-      const candidate = getSnapCandidate();
-      if (!candidate) return;
-
-      const targetY = Math.round(window.scrollY + candidate.top);
-      if (Math.abs(targetY - window.scrollY) < 6) return;
-
-      snapSettling = true;
-      window.scrollTo({ top: targetY, behavior: "smooth" });
-      waitForSettle();
-    };
-
-    const scheduleSoftSnap = () => {
-      if (snapSettling) return;
-      clearTimeout(snapTimer);
-      snapTimer = window.setTimeout(settleSoftSnap, 140);
-    };
-
-    document.addEventListener("scroll", scheduleSoftSnap, { passive: true });
-    window.addEventListener("wheel", cancelSoftSnap, { passive: true });
-    window.addEventListener("touchstart", cancelSoftSnap, { passive: true });
-    window.addEventListener("keydown", cancelSoftSnap, { passive: true });
-  }
 })();

@@ -54,7 +54,6 @@ body {
   background: var(--black);
   letter-spacing: 0.1375em;
   -webkit-font-smoothing: antialiased;
-  overscroll-behavior-y: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -132,10 +131,8 @@ body {
   transition: none;
 }
 
-/* Snap sections: clean, natural stop with no fade or motion on the
-   section itself. The "soft snap" behavior is handled in JS so we do not
-   rely on browser-native scroll snapping, which can feel like scroll lock
-   in some webviews. */
+/* Snap sections are narrative beats. The section itself stays fixed in the
+   document flow while inner content lands with a stronger "arrival" feel. */
 .snap-section,
 .snap-section.reveal,
 .snap-section.crossfade,
@@ -145,6 +142,55 @@ body {
   transform: none !important;
   animation: none !important;
   transition: none !important;
+}
+
+.snap-arrival {
+  width: 100%;
+}
+
+.how-when .snap-arrival {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 64px;
+  min-height: 100%;
+  width: 100%;
+}
+
+.how-next .snap-arrival {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  width: 100%;
+}
+
+body.motion-ready .snap-arrival-heading,
+body.motion-ready .snap-arrival-accent,
+body.motion-ready .snap-arrival-copy {
+  transition: none;
+  will-change: opacity, transform, filter;
+}
+
+body.motion-ready .snap-arrival-heading {
+  opacity: var(--snap-heading-opacity, 0);
+  transform: translate3d(0, var(--snap-heading-translate, 0px), 0)
+    scale(var(--snap-heading-scale, 1));
+  transform-origin: center top;
+}
+
+body.motion-ready .snap-arrival-accent {
+  opacity: var(--snap-accent-opacity, 0);
+  filter: blur(var(--snap-accent-blur, 0px));
+  transform: translate3d(0, var(--snap-accent-translate, 0px), 0);
+}
+
+body.motion-ready .snap-arrival-copy {
+  opacity: var(--snap-copy-opacity, 0);
+  filter: blur(var(--snap-copy-blur, 0px));
+  transform: translate3d(0, var(--snap-copy-translate, 0px), 0);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -699,6 +745,7 @@ a {
   display: flex;
   flex-direction: column;
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
   transform: translateY(-12px);
   transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
@@ -707,6 +754,7 @@ a {
 
 .mobile-menu.is-open {
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
   transform: translateY(0);
 }
@@ -3359,23 +3407,6 @@ body {
 html,
 body {
   overflow-x: hidden;
-}
-
-@media (min-width: 1101px) and (max-width: 1200px) {
-  .nav-links {
-    display: flex;
-    gap: 20px;
-    font-size: 13px;
-  }
-
-  .nav-links .btn {
-    padding: 11px 18px;
-    font-size: 12px;
-  }
-
-  .menu-toggle {
-    display: none;
-  }
 }
 
 @media (max-width: 1200px) {
