@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Koplow Defense Revision Summary</title>
+    <style>
+      :root {
+        --bg: #0a0604;
+        --panel: #17110d;
+        --panel-soft: #201913;
+        --text: #ede5de;
+        --muted: #c2b5a8;
+        --rule: rgba(255, 255, 255, 0.14);
+        --accent: #a98a52;
+        --accent-soft: rgba(169, 138, 82, 0.18);
+        --max: 920px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        background:
+          radial-gradient(circle at top, rgba(169, 138, 82, 0.16), transparent 34%),
+          linear-gradient(180deg, #090403 0%, #100906 100%);
+        color: var(--text);
+        line-height: 1.65;
+      }
+
+      main {
+        width: min(calc(100% - 2rem), var(--max));
+        margin: 0 auto;
+        padding: 4.5rem 0 5rem;
+      }
+
+      .eyebrow {
+        margin: 0 0 1rem;
+        color: var(--accent);
+        letter-spacing: 0.18em;
+        font-size: 0.82rem;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        margin: 0;
+      }
+
+      h1 {
+        font-size: clamp(2.35rem, 4vw, 4.15rem);
+        line-height: 1.04;
+        max-width: 12ch;
+        margin-bottom: 1rem;
+      }
+
+      h2 {
+        font-size: clamp(1.15rem, 2vw, 1.45rem);
+        margin-bottom: 1rem;
+      }
+
+      p,
+      li {
+        color: var(--muted);
+        font-size: 1rem;
+      }
+
+      .lede {
+        font-size: 1.1rem;
+        max-width: 62ch;
+        margin: 0 0 2rem;
+      }
+
+      .intro {
+        padding: 0 0 2rem;
+        border-bottom: 1px solid var(--rule);
+      }
+
+      .cards {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin: 2rem 0 0;
+      }
+
+      .card,
+      .section {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+        border: 1px solid var(--rule);
+        border-radius: 1.5rem;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+      }
+
+      .card {
+        padding: 1.35rem 1.35rem 1.25rem;
+      }
+
+      .card h3 {
+        font-size: 0.95rem;
+        color: var(--text);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        margin-bottom: 0.55rem;
+      }
+
+      .section {
+        padding: 1.75rem;
+        margin-top: 1.25rem;
+      }
+
+      ul,
+      ol {
+        margin: 0.85rem 0 0;
+        padding-left: 1.2rem;
+      }
+
+      li + li {
+        margin-top: 0.55rem;
+      }
+
+      strong {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      .callout {
+        margin-top: 1.25rem;
+        padding: 1rem 1.1rem;
+        border-left: 3px solid var(--accent);
+        background: var(--accent-soft);
+        border-radius: 1rem;
+      }
+
+      .callout p {
+        margin: 0;
+      }
+
+      .foot {
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--rule);
+        font-size: 0.94rem;
+      }
+
+      .foot p {
+        margin: 0.35rem 0 0;
+      }
+
+      @media (max-width: 820px) {
+        main {
+          width: min(calc(100% - 1.5rem), var(--max));
+          padding: 3rem 0 3.5rem;
+        }
+
+        .cards {
+          grid-template-columns: 1fr;
+        }
+
+        .section,
+        .card {
+          border-radius: 1.15rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .section,
+        .card {
+          padding: 1.2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="intro">
+        <p class="eyebrow">Koplow Defense</p>
+        <h1>Revision Summary And Source Reconciliation</h1>
+        <p class="lede">
+          This note explains what was revised on the site, how the motion direction was interpreted,
+          and where the revision PDF differed from the original design source files that were already
+          in use before the PDF arrived.
+        </p>
+
+        <div class="cards">
+          <article class="card">
+            <h3>Source Materials</h3>
+            <p>The revision PDF, the current Paper file, and the May site history were reviewed together.</p>
+          </article>
+          <article class="card">
+            <h3>Short Version</h3>
+            <p>The PDF added more specific flow and motion direction than the original artboards showed, so some decisions required reconciling both sources.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>What Was Updated</h2>
+        <ul>
+          <li><strong>Motion:</strong> section transitions were refined so the site feels more deliberate and less decorative.</li>
+          <li><strong>Sequencing:</strong> the lower-page beats on key pages were adjusted to more closely follow the narrative order described in the PDF.</li>
+          <li><strong>Bio/image integration:</strong> image-to-text compositions on pages such as About and Ethics were strengthened where the feedback called for a more integrated feel.</li>
+          <li><strong>CTA treatment:</strong> prominent buttons were made larger, bolder, and more proportional to the surrounding headings.</li>
+          <li><strong>Responsive behavior:</strong> the site was cleaned up for phone and tablet so layout, wrapping, spacing, and touch targets hold together more reliably.</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2>How The Motion Was Interpreted</h2>
+        <p>
+          The PDF uses terms like <strong>snap</strong> to describe how certain sections should feel, but the
+          feedback does not appear to call for literal viewport locking or browser-style scroll capture.
+        </p>
+        <p>
+          A literal viewport snap was tested and proved too aggressive. It made scrolling feel trapped,
+          especially on trackpads, and created the sense that the page was stopping the user rather than
+          guiding the content into place.
+        </p>
+        <div class="callout">
+          <p>
+            For that reason, the current implementation interprets <strong>snap</strong> as a stronger
+            section arrival rather than a locked viewport behavior. In practice, that means the content
+            lands more decisively under normal scrolling, but the page itself never takes control away from the user.
+          </p>
+        </div>
+        <p>
+          This part is naturally the most open to debate, because the feedback describes a feeling rather than
+          a strict technical requirement. The current version is meant to honor the direction without creating a
+          worse scrolling experience.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>Where The Design File And PDF Differed</h2>
+        <p>
+          The current Paper file contains desktop artboards for <strong>Home</strong> and <strong>About</strong>,
+          plus menu and stylesheet references. It does <strong>not</strong> contain desktop artboards for
+          <strong>Criminal</strong>, <strong>Ethics</strong>, or <strong>How</strong>.
+        </p>
+        <p>
+          That matters because the PDF gives explicit motion and sequencing direction for those pages, but there
+          is not a matching set of desktop artboards in the design file to compare against one-to-one.
+        </p>
+        <ul>
+          <li><strong>Home artboard:</strong> originally showed Hero → How We Defend → image bridge → What Sharp Gets You → a light/gray <strong>When It Matters</strong> section → a separate dark CTA/footer section.</li>
+          <li><strong>Home PDF notes:</strong> introduced a more explicit lower-page narrative sequence, including <strong>What Happens Next</strong> and a distinct decision-block moment that do not appear as standalone sections in the original home artboard.</li>
+          <li><strong>About:</strong> the design file and PDF are much closer to one another, with the PDF mainly refining transitions and the integrated bio treatment.</li>
+          <li><strong>Criminal / Ethics / How:</strong> these required more reconciliation because the PDF provided direction that was not fully mirrored by artboards in the currently open design file.</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2>What The May Site History Clarified</h2>
+        <p>
+          The May site history shows that the newer <strong>How</strong> page was added during that revision period,
+          while some of the lower-page beat language being discussed later did not exist in the older homepage structure
+          in the same way.
+        </p>
+        <p>
+          In other words, the PDF was not simply restating the exact same state shown in the older source files.
+          It introduced newer direction, especially around lower-page sequencing and motion emphasis.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>Best Way To Describe The Work</h2>
+        <p>
+          The cleanest explanation is that the original design files were treated as the baseline for page composition
+          where artboards existed, while the PDF was treated as the latest source of revision intent.
+        </p>
+        <div class="callout">
+          <p>
+            Where those two sources aligned, the site followed them directly. Where the PDF introduced structure or
+            motion ideas that were more specific than the original artboards, the implementation required a reconciliation
+            decision rather than a simple one-source execution.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Recommended Working Rule Going Forward</h2>
+        <ol>
+          <li>Treat the PDF as the source of truth for new revision intent.</li>
+          <li>Treat the Paper artboards as the source of truth for original page composition where those artboards exist.</li>
+          <li>Treat scroll-feel notes such as <strong>snap</strong> as descriptive motion direction unless a literal technical behavior is explicitly required.</li>
+          <li>Flag any place where the PDF introduces a new section or sequence not represented in the design file as a reconciliation decision.</li>
+        </ol>
+      </section>
+
+      <section class="foot">
+        <h2>Internal Note</h2>
+        <p>
+          This HTML file is the consolidated client-viewable summary. The earlier markdown notes are retained as internal
+          working drafts that fed into this final version.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>
