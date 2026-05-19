@@ -42,11 +42,6 @@
 
 html {
   scroll-behavior: smooth;
-  /* Sections with .scroll-snap-align: start will softly settle into place
-     once the user lingers near them. Proximity (vs mandatory) means it
-     only nudges into alignment when scroll comes to rest nearby — never
-     a forced stop mid-scroll. */
-  scroll-snap-type: y proximity;
 }
 
 html,
@@ -137,7 +132,10 @@ body {
   transition: none;
 }
 
-/* Snap sections: clean, natural stop with proximity snapping only. */
+/* Snap sections: clean, natural stop with no fade or motion on the
+   section itself. The "soft snap" behavior is handled in JS so we do not
+   rely on browser-native scroll snapping, which can feel like scroll lock
+   in some webviews. */
 .snap-section,
 .snap-section.reveal,
 .snap-section.crossfade,
@@ -147,11 +145,6 @@ body {
   transform: none !important;
   animation: none !important;
   transition: none !important;
-}
-
-.snap-section {
-  scroll-snap-align: start;
-  scroll-snap-stop: normal;
 }
 
 @media (prefers-reduced-motion: reduce) {

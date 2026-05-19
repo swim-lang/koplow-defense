@@ -179,4 +179,101 @@
     window.addEventListener("resize", onScroll, { passive: true });
     apply();
   }
+
+  // ---------- Soft snap settling ----------
+  // The client wanted a gentle "arrival" on a few key sections, but native
+  // CSS scroll snapping can hijack scroll feel in some browsers/webviews and
+  // behave more like a lock than a nudge. Instead, wait until scrolling
+  // pauses and only then softly settle a nearby snap section into place.
+  const snapSections = Array.from(document.querySelectorAll(".snap-section"));
+  const disableSoftSnap =
+    snapSections.length === 0 ||
+    window.matchMedia("(max-width: 768px)").matches ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!disableSoftSnap) {
+    let snapTimer = 0;
+    let snapSettling = false;
+    let snapSuppressUntil = 0;
+
+    const cancelSoftSnap = () => {
+      clearTimeout(snapTimer);
+      snapSettling = false;
+      snapSuppressUntil = performance.now() + 400;
+    };
+
+    const getSnapCandidate = () => {
+      const vh = window.innerHeight;
+      const bandTop = -vh * 0.12;
+      const bandBottom = vh * 0.28;
+
+      return snapSections
+        .map((section) => ({
+          section,
+          top: section.getBoundingClientRect().top,
+        }))
+        .filter(({ top }) => top >= bandTop && top <= bandBottom)
+        .sort((a, b) => Math.abs(a.top) - Math.abs(b.top))[0];
+    };
+
+    const waitForSettle = () => {
+      let lastY = window.scrollY;
+      let stableFrames = 0;
+      let checks = 0;
+
+      const poll = () => {
+        checks += 1;
+        const nextY = window.scrollY;
+        if (Math.abs(nextY - lastY) < 2) {
+          stableFrames += 1;
+        } else {
+          stableFrames = 0;
+        }
+        lastY = nextY;
+
+        if (stableFrames >= 3 || checks >= 30) {
+          snapSettling = false;
+          snapSuppressUntil = performance.now() + 250;
+          return;
+        }
+
+        window.setTimeout(poll, 50);
+      };
+
+      window.setTimeout(poll, 50);
+    };
+
+    const settleSoftSnap = () => {
+      if (snapSettling) return;
+      if (performance.now() < snapSuppressUntil) {
+        clearTimeout(snapTimer);
+        snapTimer = window.setTimeout(
+          settleSoftSnap,
+          Math.max(40, snapSuppressUntil - performance.now() + 20)
+        );
+        return;
+      }
+
+      const candidate = getSnapCandidate();
+      if (!candidate) return;
+
+      const targetY = Math.round(window.scrollY + candidate.top);
+      if (Math.abs(targetY - window.scrollY) < 6) return;
+
+      snapSettling = true;
+      window.scrollTo({ top: targetY, behavior: "smooth" });
+      waitForSettle();
+    };
+
+    const scheduleSoftSnap = () => {
+      if (snapSettling) return;
+      clearTimeout(snapTimer);
+      snapTimer = window.setTimeout(settleSoftSnap, 140);
+    };
+
+    document.addEventListener("scroll", scheduleSoftSnap, { passive: true });
+    window.addEventListener("wheel", cancelSoftSnap, { passive: true });
+    window.addEventListener("touchstart", cancelSoftSnap, { passive: true });
+    window.addEventListener("keydown", cancelSoftSnap, { passive: true });
+  }
 })();
