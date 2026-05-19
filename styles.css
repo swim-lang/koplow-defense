@@ -119,41 +119,47 @@ body {
   will-change: auto;
 }
 
-/* Scroll-driven fade-in: section opacity/translate are set by JS via
+/* Scroll-driven crossfade: section opacity/translate are set by JS via
    CSS vars (--enter-opacity, --enter-translate), tying the entrance to
    scroll position rather than a one-shot timer. Used for the section
    that follows the hero so the cross-fade with the hero stays in sync. */
-.scroll-fade-in {
+.crossfade {
   opacity: var(--enter-opacity, 0);
   transform: translateY(var(--enter-translate, 16px));
   transition: none;
   will-change: opacity, transform;
 }
 
-.reveal.scroll-fade-in,
-.reveal.scroll-fade-in.is-visible {
+.reveal.crossfade,
+.reveal.crossfade.is-visible {
   opacity: var(--enter-opacity, 0);
   transform: translateY(var(--enter-translate, 16px));
   transition: none;
 }
 
-/* Snap sections: clean, natural stop — no fade, no movement. */
-.snap,
-.snap.reveal,
-.snap.scroll-fade-in,
-.snap .anim-fade-up,
-.snap .anim-fade-in {
+/* Snap sections: clean, natural stop with proximity snapping only. */
+.snap-section,
+.snap-section.reveal,
+.snap-section.crossfade,
+.snap-section .anim-fade-up,
+.snap-section .anim-fade-in {
   opacity: 1 !important;
   transform: none !important;
   animation: none !important;
   transition: none !important;
 }
 
+.snap-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .anim-fade-up,
   .anim-fade-in,
   .reveal,
-  .scroll-fade-in {
+  .crossfade,
+  .snap-section {
     opacity: 1 !important;
     transform: none !important;
     animation: none !important;
@@ -165,7 +171,8 @@ body {
   .anim-fade-up,
   .anim-fade-in,
   .reveal,
-  .scroll-fade-in {
+  .crossfade,
+  .snap-section {
     opacity: 1 !important;
     transform: none !important;
     animation: none !important;
@@ -354,26 +361,30 @@ a {
   }
 }
 
-/* ---------- FINALE (When It Matters + When It Has To Be Sharp) ---------- */
-/* Combined section that snaps as one — both blocks visible together once
-   it settles into place. Tall enough that scroll-snap-align: start can
-   actually align the section's top with the viewport top. */
-.section-finale {
-  background: #000;
-  color: var(--white);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 96px 80px;
-  min-height: 100vh;
-  gap: 64px;
+.home-when,
+.criminal-when {
+  --how-bg: #000000;
 }
 
-.finale-cta {
-  display: flex;
-  flex-direction: column;
+.home-when {
   align-items: center;
+}
+
+.home-when .how-when-inner {
+  max-width: 1040px;
+}
+
+.home-when .how-when-title {
+  text-align: center;
+}
+
+.home-when-list {
+  gap: 42px;
+}
+
+.criminal-when-list {
+  gap: 56px;
+  max-width: 980px;
 }
 
 /* ---------- PAPER SECTIONS ---------- */
@@ -445,20 +456,20 @@ a {
 }
 
 /* Stagger fires once the scroll-driven cross-fade has visibly begun. */
-.scroll-fade-in.in-view .col,
-.reveal.is-visible:not(.scroll-fade-in) .col {
+.crossfade.in-view .col,
+.reveal.is-visible:not(.crossfade) .col {
   opacity: 1;
   transform: translateY(0);
 }
 
-.scroll-fade-in.in-view .col:nth-child(1),
-.reveal.is-visible:not(.scroll-fade-in) .col:nth-child(1) { transition-delay: 0.10s; }
-.scroll-fade-in.in-view .col:nth-child(2),
-.reveal.is-visible:not(.scroll-fade-in) .col:nth-child(2) { transition-delay: 0.25s; }
-.scroll-fade-in.in-view .col:nth-child(3),
-.reveal.is-visible:not(.scroll-fade-in) .col:nth-child(3) { transition-delay: 0.40s; }
+.crossfade.in-view .col:nth-child(1),
+.reveal.is-visible:not(.crossfade) .col:nth-child(1) { transition-delay: 0.10s; }
+.crossfade.in-view .col:nth-child(2),
+.reveal.is-visible:not(.crossfade) .col:nth-child(2) { transition-delay: 0.25s; }
+.crossfade.in-view .col:nth-child(3),
+.reveal.is-visible:not(.crossfade) .col:nth-child(3) { transition-delay: 0.40s; }
 
-.snap .col {
+.snap-section .col {
   opacity: 1 !important;
   transform: none !important;
   transition: none !important;
@@ -585,15 +596,6 @@ a {
   margin-top: 12px;
 }
 
-/* ---------- WHEN IT MATTERS ---------- */
-/* Generic soft-snap target. Pairs with html { scroll-snap-type: y proximity }
-   so any section that opts in will gently align to the viewport top once
-   the user lingers near it — never a forced stop mid-scroll. */
-.snap-target {
-  scroll-snap-align: start;
-  scroll-snap-stop: normal;
-}
-
 .when-block {
   display: flex;
   flex-direction: column;
@@ -672,10 +674,6 @@ a {
   font-size: calc(var(--type-eyebrow) * 1.25);
   color: var(--white);
   margin-top: 16px;
-}
-
-.section-finale + .footer {
-  padding-top: 0;
 }
 
 /* ---------- MOBILE MENU ---------- */
@@ -843,7 +841,6 @@ a {
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 1200px) {
   .hero,
-  .section-finale,
   .footer {
     padding-left: 24px;
     padding-right: 24px;
@@ -3159,7 +3156,7 @@ a {
 
 /* ---------- When It Matters ---------- */
 .how-when {
-  background: var(--how-bg);
+  background: var(--how-bg, #000000);
   color: var(--white);
   padding: 160px 120px 80px;
   display: flex;
@@ -3206,34 +3203,10 @@ a {
   padding-top: 80px;
 }
 
-/* ---------- What Happens Next (header) ---------- */
-.how-next-header {
+/* ---------- What Happens Next / Decision Block ---------- */
+.how-next {
   color: var(--black);
-  padding: 180px 80px 80px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 48px;
-  min-height: 100vh;
-}
-
-.how-next-header-title {
-  font-size: clamp(36px, 4.2vw, 60px);
-  font-weight: var(--weight-bold);
-  letter-spacing: 0.14em;
-  margin: 0;
-  text-align: center;
-}
-
-.how-next-chevron {
-  color: var(--gold);
-}
-
-/* ---------- What Happens Next (detail) ---------- */
-.how-next-detail {
-  color: var(--black);
-  padding: 120px 80px 180px;
+  padding: 160px 80px 180px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -3242,11 +3215,20 @@ a {
   min-height: 100vh;
 }
 
-.how-next-detail-title {
-  font-size: clamp(32px, 3vw, 42px);
+.how-next-title {
+  font-size: clamp(36px, 4.2vw, 60px);
   font-weight: var(--weight-bold);
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   margin: 0;
+  text-align: center;
+}
+
+.how-next .section-chevron {
+  padding: 34px 0 58px;
+}
+
+.how-next-chevron {
+  color: var(--gold);
 }
 
 .how-next-rule {
@@ -3254,10 +3236,17 @@ a {
   height: 1px;
   background: rgba(17, 17, 17, 0.35);
   border: none;
-  margin: 28px 0 120px;
+  margin: 0 0 110px;
 }
 
-.how-next-detail p {
+.how-next-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 64px;
+}
+
+.how-next-copy p {
   font-size: clamp(26px, 2.6vw, 36px);
   letter-spacing: 0.02em;
   margin: 0;
@@ -3265,11 +3254,7 @@ a {
   line-height: 1.45;
 }
 
-.how-next-detail p + p {
-  margin-top: 64px;
-}
-
-.how-next-detail p strong.gold {
+.how-next-copy p strong.gold {
   font-weight: var(--weight-bold);
 }
 
@@ -3302,7 +3287,8 @@ a {
   margin-top: 8px;
 }
 
-.how-cta + .footer {
+.how-cta + .footer,
+.home-cta + .footer {
   padding-top: 0;
 }
 
@@ -3312,8 +3298,7 @@ a {
   .how-where,
   .how-pressure,
   .how-when,
-  .how-next-header,
-  .how-next-detail,
+  .how-next,
   .how-cta {
     padding-left: 24px;
     padding-right: 24px;
@@ -3343,14 +3328,1244 @@ a {
     padding-top: 90px;
     padding-bottom: 70px;
   }
-  .how-next-header {
-    padding-top: 90px;
+  .how-when-title {
+    margin-bottom: 64px;
   }
-  .how-next-detail {
+  .how-when-list {
+    gap: 40px;
+    font-size: clamp(20px, 6vw, 28px);
+  }
+  .home-when-list,
+  .criminal-when-list {
+    gap: 32px;
+  }
+  .how-next {
+    padding-top: 90px;
     padding-bottom: 90px;
+  }
+  .how-next .section-chevron {
+    padding-bottom: 42px;
+  }
+  .how-next-copy {
+    gap: 40px;
+  }
+  .how-next-copy p {
+    font-size: clamp(22px, 5.4vw, 30px);
   }
   .how-cta {
     padding-top: 80px;
     padding-bottom: 80px;
+  }
+}
+
+/* ---------- RESPONSIVE REFINEMENTS ---------- */
+body {
+  overflow-x: hidden;
+}
+
+html,
+body {
+  overflow-x: hidden;
+}
+
+@media (min-width: 1101px) and (max-width: 1200px) {
+  .nav-links {
+    display: flex;
+    gap: 20px;
+    font-size: 13px;
+  }
+
+  .nav-links .btn {
+    padding: 11px 18px;
+    font-size: 12px;
+  }
+
+  .menu-toggle {
+    display: none;
+  }
+}
+
+@media (max-width: 1200px) {
+  .hero,
+  .footer,
+  .dark-nav,
+  .ethics-hero,
+  .ethics-framing-band,
+  .ethics-precision,
+  .ethics-process,
+  .ethics-decider,
+  .ethics-examined,
+  .ethics-advisory,
+  .ethics-closing,
+  .criminal-matters,
+  .criminal-starts,
+  .criminal-feature,
+  .criminal-closing,
+  .criminal-turn,
+  .criminal-when,
+  .criminal-next,
+  .how-hero-photo,
+  .how-where,
+  .how-pressure,
+  .how-when,
+  .how-next,
+  .how-cta {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .nav,
+  .dark-nav .nav {
+    padding: 20px 0 40px;
+  }
+
+  .nav-lockup {
+    height: 22px;
+  }
+
+  .menu-toggle {
+    width: auto;
+    padding: 10px 0 10px 10px;
+  }
+
+  .hero {
+    padding-bottom: 56px;
+  }
+
+  .hero-title {
+    font-size: clamp(34px, 5vw, 46px);
+    max-width: 14ch;
+  }
+
+  .hero-image {
+    width: min(100%, 980px);
+    margin-top: -6px;
+  }
+
+  .look-closer {
+    margin-top: 24px;
+  }
+
+  .section {
+    padding-top: 88px;
+    padding-bottom: 88px;
+  }
+
+  .road {
+    height: 360px;
+  }
+
+  .road-inner {
+    gap: 16px;
+    padding: 0 24px;
+    font-size: 24px;
+  }
+
+  .footer {
+    padding-top: 40px;
+    padding-bottom: 48px;
+  }
+
+  .footer-links {
+    flex-wrap: wrap;
+    gap: 18px 28px;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+
+  .footer-mark {
+    max-width: 760px;
+  }
+
+  .footer-address {
+    max-width: 32ch;
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  .footer-cta,
+  .closing-cta .btn,
+  .ethics-outline-btn,
+  .criminal-outline-btn,
+  .contact-outline-btn,
+  .how-outline-btn {
+    justify-content: center;
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .mobile-menu {
+    overflow-y: auto;
+  }
+
+  .mobile-menu-header {
+    padding: 20px 24px;
+  }
+
+  .mobile-menu-body {
+    padding: 40px 24px 20px;
+  }
+
+  .mobile-links a {
+    padding: 18px 0;
+    font-size: clamp(28px, 3.8vw, 36px);
+  }
+
+  .mobile-menu-footer {
+    padding: 0 24px 24px;
+    gap: 20px;
+  }
+
+  .mobile-cta {
+    font-size: 14px;
+    letter-spacing: 0.08em;
+  }
+
+  .about-hero-photo {
+    min-height: 560px;
+    padding-top: 180px;
+    padding-bottom: 48px;
+    background-position: 64% center;
+  }
+
+  .about-hero-title {
+    font-size: clamp(34px, 5vw, 48px);
+    margin-bottom: 28px;
+  }
+
+  .about-hero-title span {
+    white-space: normal;
+  }
+
+  .about-hero-sub {
+    font-size: 16px;
+  }
+
+  .pull-quote {
+    padding-top: 120px;
+  }
+
+  .pull-quote-body {
+    gap: 36px;
+    padding-bottom: 104px;
+  }
+
+  .pull-quote h2 {
+    font-size: clamp(30px, 4vw, 40px);
+  }
+
+  .tactical {
+    padding-bottom: 240px;
+    background-size: cover;
+    background-position: 72% bottom;
+  }
+
+  .tactical-text {
+    max-width: 620px;
+    padding-top: 72px;
+  }
+
+  .cases-break {
+    padding: 96px 24px 32px;
+  }
+
+  .cases-turn {
+    min-height: 60vh;
+    padding-top: 72px;
+    padding-bottom: 72px;
+  }
+
+  .case-details {
+    padding-bottom: 56px;
+  }
+
+  .case-detail-background .case-detail-photo,
+  .case-detail-object-photo .case-detail-photo,
+  .case-detail-scene-photo .case-detail-photo,
+  .case-detail-dui-photo .case-detail-photo,
+  .case-detail-marijuana-photo .case-detail-photo {
+    min-height: 300px;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .how-header {
+    min-height: 70vh;
+    padding: 88px 24px;
+  }
+
+  .bio-card {
+    margin-top: 40px;
+  }
+
+  .bio-photo {
+    height: min(60vw, 560px);
+  }
+
+  .bio-text {
+    padding: 36px 32px 40px;
+    gap: 20px;
+  }
+
+  .bio-quote {
+    font-size: clamp(18px, 2.1vw, 22px);
+  }
+
+  .closing-cta {
+    padding: 96px 24px 104px;
+    gap: 28px;
+  }
+
+  .ethics-page {
+    --ethics-decider-min-height: 68vh;
+    --ethics-decider-title-size: clamp(28px, 4vw, 44px);
+    --ethics-advisory-group-gap: 34px;
+    --ethics-advisory-body-size: 16px;
+    --ethics-advisory-emphasis-gap: 48px;
+  }
+
+  .ethics-hero {
+    padding-top: 16px;
+    padding-bottom: 40px;
+    background-position: 58% center;
+  }
+
+  .ethics-hero-grid {
+    min-height: 620px;
+    align-items: flex-end;
+  }
+
+  .ethics-hero-copy {
+    max-width: 680px;
+  }
+
+  .ethics-hero-title {
+    font-size: clamp(38px, 5.1vw, 52px);
+    letter-spacing: 0.11em;
+  }
+
+  .ethics-hero-subtitle {
+    max-width: 16ch;
+    font-size: clamp(18px, 2.2vw, 24px);
+  }
+
+  .ethics-framing-band {
+    padding-top: 120px;
+    padding-bottom: 64px;
+  }
+
+  .ethics-framing h2 span {
+    white-space: normal;
+  }
+
+  .ethics-framing p {
+    font-size: clamp(18px, 2.2vw, 24px);
+  }
+
+  .ethics-precision,
+  .ethics-process,
+  .ethics-examined {
+    padding-top: 96px;
+    padding-bottom: 96px;
+  }
+
+  .ethics-decider {
+    min-height: var(--ethics-decider-min-height);
+    padding-top: 96px;
+    padding-bottom: 96px;
+  }
+
+  .ethics-decider h2 {
+    white-space: normal;
+  }
+
+  .ethics-examined h2 {
+    margin-bottom: 64px;
+  }
+
+  .ethics-advisory {
+    padding-top: 96px;
+  }
+
+  .ethics-advisory-copy p {
+    font-size: clamp(18px, 2.2vw, 28px);
+    line-height: 1.32;
+  }
+
+  .ethics-profile-copy {
+    padding: 40px 32px;
+  }
+
+  .ethics-profile-image {
+    background-position: center top;
+    background-size: cover;
+  }
+
+  .ethics-closing {
+    padding-top: 72px;
+    padding-bottom: 96px;
+  }
+
+  .criminal-content,
+  .criminal-content-narrow,
+  .contact-content {
+    width: calc(100% - 48px);
+  }
+
+  .criminal-hero-photo {
+    min-height: 640px;
+    padding-top: 160px;
+    padding-bottom: 56px;
+    background-position: 64% center;
+  }
+
+  .criminal-hero-copy {
+    max-width: 620px;
+  }
+
+  .criminal-hero-title {
+    width: auto;
+    max-width: 12ch;
+    margin-bottom: 24px;
+    font-size: clamp(32px, 5.4vw, 50px);
+  }
+
+  .criminal-hero-title span,
+  .criminal-hero-support p {
+    white-space: normal;
+  }
+
+  .criminal-hero-support {
+    width: auto;
+    max-width: 40ch;
+  }
+
+  .criminal-hero-support p {
+    font-size: clamp(18px, 2.1vw, 22px);
+  }
+
+  .criminal-turn {
+    min-height: auto;
+    padding-top: 88px;
+    padding-bottom: 40px;
+  }
+
+  .criminal-turn h2 {
+    margin-bottom: 48px;
+  }
+
+  .criminal-matters,
+  .criminal-starts {
+    padding-top: 88px;
+    padding-bottom: 88px;
+  }
+
+  .criminal-feature {
+    min-height: 680px;
+    padding-top: 88px;
+    padding-bottom: 88px;
+    background-image:
+      linear-gradient(
+        90deg,
+        rgba(7, 7, 7, 0.975) 0%,
+        rgba(7, 7, 7, 0.92) 42%,
+        rgba(7, 7, 7, 0.48) 76%,
+        rgba(7, 7, 7, 0.28) 100%
+      ),
+      var(--photo-url, none);
+    background-position: 68% center;
+  }
+
+  .criminal-feature-inner {
+    min-height: 0;
+    align-items: flex-start;
+  }
+
+  .criminal-feature-copy {
+    width: min(560px, 100%);
+    gap: 28px;
+  }
+
+  .criminal-when,
+  .criminal-next {
+    min-height: auto;
+  }
+
+  .criminal-closing {
+    padding-top: 96px;
+    padding-bottom: 96px;
+  }
+
+  .contact-hero {
+    padding-bottom: 88px;
+  }
+
+  .contact-hero-grid {
+    min-height: auto;
+    gap: 48px;
+    padding-top: 64px;
+  }
+
+  .contact-hero-title {
+    font-size: clamp(38px, 5vw, 56px);
+    max-width: 12ch;
+  }
+
+  .contact-form-card {
+    padding: 32px;
+  }
+
+  .how-page .dark-nav {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .how-hero-photo {
+    min-height: 760px;
+    padding-top: 180px;
+    padding-bottom: 72px;
+    background-position: 68% center;
+  }
+
+  .how-hero-title {
+    font-size: clamp(36px, 5vw, 52px);
+    letter-spacing: 0.11em;
+  }
+
+  .how-hero-sub {
+    font-size: clamp(22px, 2.6vw, 30px);
+  }
+
+  .how-where {
+    min-height: auto;
+    padding-top: 112px;
+    padding-bottom: 120px;
+  }
+
+  .how-where-eyebrow {
+    margin-bottom: 56px;
+  }
+
+  .how-where-grid {
+    gap: 56px 48px;
+  }
+
+  .how-where-item h3 {
+    font-size: clamp(24px, 2.4vw, 30px);
+  }
+
+  .how-where-item p {
+    font-size: clamp(18px, 1.9vw, 22px);
+  }
+
+  .how-pressure {
+    min-height: 620px;
+    padding-top: 96px;
+    padding-bottom: 96px;
+    background-position: 62% center;
+  }
+
+  .how-pressure-title > span {
+    white-space: normal;
+  }
+
+  .how-when {
+    min-height: auto;
+    padding-top: 104px;
+    padding-bottom: 72px;
+    gap: 44px;
+  }
+
+  .how-when-title {
+    margin-bottom: 72px;
+  }
+
+  .how-when-list {
+    gap: 48px;
+    font-size: clamp(22px, 2.5vw, 30px);
+  }
+
+  .how-when .section-chevron {
+    padding-top: 56px;
+  }
+
+  .how-next {
+    min-height: auto;
+    padding-top: 104px;
+    padding-bottom: 112px;
+  }
+
+  .how-next .section-chevron {
+    padding: 28px 0 40px;
+  }
+
+  .how-next-rule {
+    width: 180px;
+    margin-bottom: 72px;
+  }
+
+  .how-next-copy {
+    gap: 44px;
+  }
+
+  .how-next-copy p {
+    font-size: clamp(22px, 2.6vw, 30px);
+  }
+
+  .how-cta {
+    padding-top: 96px;
+    padding-bottom: 112px;
+  }
+}
+
+@media (min-width: 961px) and (max-width: 1200px) {
+  .contact-hero-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+    align-items: start;
+  }
+}
+
+@media (min-width: 1001px) and (max-width: 1200px) {
+  .criminal-matters-grid,
+  .criminal-starts-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 36px 40px;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1200px) {
+  .ethics-columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px 32px;
+  }
+
+  .ethics-column {
+    padding: 0 10px;
+  }
+
+  .ethics-column + .ethics-column {
+    border: 0;
+    padding-top: 0;
+  }
+
+  .ethics-column:nth-child(2n) {
+    border-left: 1px solid rgba(17, 17, 17, 0.16);
+    padding-left: 24px;
+  }
+
+  .ethics-column:nth-child(n + 3) {
+    border-top: 1px solid rgba(17, 17, 17, 0.16);
+    padding-top: 32px;
+  }
+
+  .ethics-profile-card {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 420px);
+  }
+
+  .ethics-profile-image {
+    min-height: auto;
+    -webkit-mask-image: linear-gradient(
+      to left,
+      #000 0%,
+      #000 58%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to left,
+      #000 0%,
+      #000 58%,
+      transparent 100%
+    );
+  }
+}
+
+@media (max-width: 900px) {
+  .how-where-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero,
+  .footer,
+  .dark-nav,
+  .ethics-hero,
+  .ethics-framing-band,
+  .ethics-precision,
+  .ethics-process,
+  .ethics-decider,
+  .ethics-examined,
+  .ethics-advisory,
+  .ethics-closing,
+  .criminal-hero-photo,
+  .criminal-matters,
+  .criminal-starts,
+  .criminal-feature,
+  .criminal-closing,
+  .criminal-turn,
+  .criminal-when,
+  .criminal-next,
+  .how-hero-photo,
+  .how-where,
+  .how-pressure,
+  .how-when,
+  .how-next,
+  .how-cta {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .nav,
+  .dark-nav .nav {
+    padding-bottom: 28px;
+  }
+
+  .hero {
+    padding-bottom: 48px;
+  }
+
+  .hero-title {
+    max-width: 11ch;
+    font-size: clamp(30px, 9vw, 40px);
+    letter-spacing: 0.1em;
+  }
+
+  .hero-image {
+    margin-top: 12px;
+  }
+
+  .section {
+    padding-top: 72px;
+    padding-bottom: 72px;
+  }
+
+  .road {
+    height: 300px;
+  }
+
+  .road-inner {
+    font-size: 18px;
+    line-height: 1.45;
+  }
+
+  .footer {
+    padding-top: 32px;
+    padding-bottom: 40px;
+  }
+
+  .footer-links {
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .footer-cta,
+  .closing-cta .btn,
+  .ethics-outline-btn,
+  .criminal-outline-btn,
+  .contact-outline-btn,
+  .how-outline-btn {
+    width: min(100%, 360px);
+  }
+
+  .mobile-menu-header {
+    padding: 18px 24px;
+  }
+
+  .mobile-menu-body {
+    padding-top: 32px;
+  }
+
+  .mobile-links a {
+    font-size: clamp(24px, 8vw, 32px);
+  }
+
+  .about-hero-photo {
+    min-height: 480px;
+    padding-top: 140px;
+    background-position: 72% center;
+  }
+
+  .about-hero-title {
+    font-size: clamp(30px, 8.4vw, 40px);
+    letter-spacing: 0.1em;
+  }
+
+  .about-hero-sub {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .pull-quote {
+    padding-top: 96px;
+  }
+
+  .pull-quote-body {
+    gap: 28px;
+    padding-bottom: 88px;
+  }
+
+  .pull-quote h2 {
+    font-size: clamp(24px, 7.2vw, 32px);
+  }
+
+  .tactical {
+    min-height: 0;
+    padding: 0;
+    background-image: none;
+    display: block;
+  }
+
+  .tactical-text {
+    max-width: none;
+    width: 100%;
+    padding: 72px 24px 40px;
+    gap: 22px;
+  }
+
+  .tactical-text h2 {
+    font-size: clamp(24px, 7vw, 30px);
+    letter-spacing: 0.09em;
+  }
+
+  .tactical-body p,
+  .tactical-tagline {
+    font-size: 16px;
+  }
+
+  .section-chevron-overlay {
+    position: static;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    padding: 0 0 16px;
+  }
+
+  .case-detail {
+    padding-top: 32px;
+    padding-bottom: 32px;
+    gap: 18px;
+  }
+
+  .case-detail-title {
+    font-size: 22px;
+  }
+
+  .case-detail-rows li {
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+  .case-detail-background .case-detail-photo,
+  .case-detail-object-photo .case-detail-photo,
+  .case-detail-scene-photo .case-detail-photo,
+  .case-detail-dui-photo .case-detail-photo,
+  .case-detail-marijuana-photo .case-detail-photo {
+    min-height: 220px;
+    aspect-ratio: 4 / 3;
+  }
+
+  .how-header {
+    min-height: auto;
+    padding: 72px 24px;
+  }
+
+  .cases-turn h2,
+  .how-header h2,
+  .closing-cta-headline span {
+    font-size: clamp(24px, 7vw, 30px);
+  }
+
+  .bio-photo {
+    height: min(98vw, 420px);
+  }
+
+  .bio-text {
+    padding: 28px 24px 32px;
+  }
+
+  .closing-cta {
+    padding-top: 72px;
+    padding-bottom: 80px;
+  }
+
+  .ethics-page {
+    --ethics-decider-min-height: auto;
+    --ethics-decider-title-size: clamp(24px, 7.6vw, 34px);
+    --ethics-advisory-label-size: 16px;
+    --ethics-advisory-group-gap: 28px;
+    --ethics-advisory-body-size: 16px;
+    --ethics-advisory-emphasis-gap: 32px;
+  }
+
+  .ethics-hero-grid {
+    min-height: 520px;
+    align-items: flex-end;
+  }
+
+  .ethics-hero-copy,
+  .ethics-framing,
+  .ethics-content,
+  .ethics-content-narrow {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .ethics-hero-copy {
+    max-width: 100%;
+  }
+
+  .ethics-framing-band {
+    padding-top: 88px;
+    padding-bottom: 56px;
+  }
+
+  .ethics-framing {
+    margin-top: 40px;
+  }
+
+  .ethics-precision,
+  .ethics-process,
+  .ethics-examined {
+    padding-top: 72px;
+    padding-bottom: 72px;
+  }
+
+  .ethics-precision-list {
+    gap: 12px;
+    margin-top: 36px;
+    margin-bottom: 36px;
+  }
+
+  .ethics-process-list {
+    gap: 24px;
+  }
+
+  .ethics-decider {
+    min-height: auto;
+    padding-top: 72px;
+    padding-bottom: 72px;
+  }
+
+  .ethics-examined h2 {
+    margin-bottom: 44px;
+  }
+
+  .ethics-advisory {
+    padding-top: 72px;
+  }
+
+  .ethics-advisory-inner {
+    gap: 40px;
+  }
+
+  .ethics-profile-copy {
+    padding: 32px 24px;
+  }
+
+  .ethics-profile-image {
+    min-height: 320px;
+  }
+
+  .criminal-content,
+  .criminal-content-narrow,
+  .contact-content {
+    width: calc(100% - 48px);
+  }
+
+  .criminal-hero-photo {
+    min-height: 520px;
+    padding-top: 140px;
+    padding-bottom: 32px;
+    background-position: 72% center;
+  }
+
+  .criminal-hero-title {
+    max-width: 100%;
+    font-size: clamp(26px, 7.6vw, 36px);
+  }
+
+  .criminal-hero-support p {
+    font-size: 17px;
+  }
+
+  .criminal-turn {
+    padding-top: 72px;
+    padding-bottom: 24px;
+  }
+
+  .criminal-turn h2 {
+    margin-bottom: 32px;
+  }
+
+  .criminal-matters,
+  .criminal-starts {
+    padding-top: 72px;
+    padding-bottom: 72px;
+  }
+
+  .criminal-feature {
+    min-height: auto;
+    padding-top: 72px;
+    padding-bottom: 72px;
+    background-image:
+      linear-gradient(
+        180deg,
+        rgba(7, 7, 7, 0.94) 0%,
+        rgba(7, 7, 7, 0.82) 48%,
+        rgba(7, 7, 7, 0.7) 100%
+      ),
+      var(--photo-url, none);
+    background-position: 66% center;
+  }
+
+  .criminal-feature-copy h2 {
+    font-size: clamp(26px, 7vw, 34px);
+  }
+
+  .criminal-feature-label,
+  .criminal-feature-block p:not(.criminal-feature-label),
+  .criminal-feature-outcome {
+    font-size: 17px;
+  }
+
+  .criminal-when {
+    padding-top: 72px;
+    padding-bottom: 56px;
+    gap: 32px;
+  }
+
+  .criminal-next {
+    padding-top: 72px;
+    padding-bottom: 72px;
+  }
+
+  .criminal-closing {
+    padding-top: 72px;
+    padding-bottom: 80px;
+  }
+
+  .contact-hero {
+    padding-bottom: 72px;
+  }
+
+  .contact-hero-grid {
+    gap: 32px;
+    padding-top: 56px;
+  }
+
+  .contact-hero-title {
+    font-size: clamp(30px, 9vw, 42px);
+    letter-spacing: 0.08em;
+  }
+
+  .contact-hero-copy p {
+    font-size: 18px;
+  }
+
+  .contact-office-note {
+    font-size: 16px;
+  }
+
+  .contact-form-card {
+    padding: 24px;
+  }
+
+  .contact-form {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .contact-field input,
+  .contact-field select,
+  .contact-field textarea {
+    font-size: 16px;
+    padding: 16px;
+  }
+
+  .contact-submit-btn {
+    padding: 18px 20px;
+    font-size: 14px;
+  }
+
+  .how-hero-photo {
+    min-height: 520px;
+    padding-top: 136px;
+    padding-bottom: 56px;
+    background-position: 70% center;
+  }
+
+  .how-hero-title {
+    font-size: clamp(30px, 8.6vw, 40px);
+    letter-spacing: 0.09em;
+  }
+
+  .how-hero-sub {
+    font-size: clamp(18px, 5.4vw, 24px);
+  }
+
+  .how-where {
+    padding-top: 72px;
+    padding-bottom: 72px;
+  }
+
+  .how-where-eyebrow {
+    margin-bottom: 40px;
+    font-size: clamp(18px, 5vw, 24px);
+  }
+
+  .how-pressure {
+    min-height: 440px;
+    padding-top: 72px;
+    padding-bottom: 72px;
+    background-position: 70% center;
+  }
+
+  .how-pressure-title {
+    font-size: clamp(28px, 7.4vw, 38px);
+  }
+
+  .how-when {
+    padding-top: 72px;
+    padding-bottom: 56px;
+    gap: 32px;
+  }
+
+  .how-when-list,
+  .home-when-list,
+  .criminal-when-list {
+    gap: 32px;
+  }
+
+  .how-next {
+    padding-top: 72px;
+    padding-bottom: 72px;
+  }
+
+  .how-next-rule {
+    width: 140px;
+    margin-bottom: 40px;
+  }
+
+  .how-next-copy {
+    gap: 28px;
+  }
+
+  .how-next-copy p {
+    font-size: clamp(20px, 5.6vw, 28px);
+  }
+
+  .how-cta {
+    padding-top: 72px;
+    padding-bottom: 72px;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero,
+  .footer,
+  .dark-nav,
+  .about-hero-photo,
+  .pull-quote-body,
+  .cases-break,
+  .cases-turn,
+  .case-detail,
+  .case-detail-background,
+  .bio-text,
+  .closing-cta,
+  .ethics-hero,
+  .ethics-framing-band,
+  .ethics-precision,
+  .ethics-process,
+  .ethics-decider,
+  .ethics-examined,
+  .ethics-advisory,
+  .ethics-closing,
+  .ethics-profile-copy,
+  .criminal-hero-photo,
+  .criminal-matters,
+  .criminal-starts,
+  .criminal-feature,
+  .criminal-closing,
+  .criminal-turn,
+  .criminal-when,
+  .criminal-next,
+  .contact-hero,
+  .contact-form-card,
+  .how-hero-photo,
+  .how-where,
+  .how-pressure,
+  .how-when,
+  .how-next,
+  .how-cta {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .hero-title,
+  .section-title,
+  .footer-title,
+  .about-hero-title,
+  .ethics-hero-title,
+  .criminal-hero-title,
+  .how-hero-title,
+  .how-cta-headline,
+  .closing-cta-headline span,
+  .criminal-closing-headline span,
+  .ethics-closing-headline span {
+    letter-spacing: 0.07em;
+  }
+
+  .footer-cta,
+  .closing-cta .btn,
+  .ethics-outline-btn,
+  .criminal-outline-btn,
+  .contact-outline-btn,
+  .how-outline-btn {
+    width: 100%;
+  }
+
+  .ethics-hero-title {
+    font-size: clamp(28px, 8.2vw, 34px);
+  }
+
+  .mobile-menu-header {
+    padding: 16px 18px;
+  }
+
+  .mobile-menu-body {
+    padding: 28px 18px 16px;
+  }
+
+  .mobile-links a {
+    padding: 16px 0;
+    font-size: clamp(22px, 8.6vw, 30px);
+  }
+
+  .mobile-menu-footer {
+    padding: 0 18px 18px;
+  }
+
+  .contact-content,
+  .criminal-content,
+  .criminal-content-narrow {
+    width: calc(100% - 36px);
+  }
+
+  .contact-form-card {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .contact-field input,
+  .contact-field select,
+  .contact-field textarea {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .section-chevron-overlay {
+    padding-bottom: 12px;
   }
 }

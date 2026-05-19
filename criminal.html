@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Criminal Defense — Koplow Defense</title>
-    <link rel="stylesheet" href="styles.css?v=20260418-8" />
+    <link rel="stylesheet" href="styles.css?v=20260518-1" />
   </head>
   <body class="criminal-page">
     <header class="dark-nav">
@@ -33,14 +33,14 @@
         </div>
       </section>
 
-      <section class="criminal-turn reveal scroll-fade-in">
+      <section class="criminal-turn reveal crossfade">
         <div class="criminal-content criminal-content-narrow">
           <p>Most criminal cases aren't decided by what happened</p>
           <h2>They're decided by what goes unchallenged</h2>
         </div>
       </section>
 
-      <section class="criminal-matters reveal scroll-fade-in">
+      <section class="criminal-matters reveal crossfade">
         <div class="criminal-content">
           <h2>This is where cases change</h2>
 
@@ -86,7 +86,7 @@
         </div>
       </section>
 
-      <section class="criminal-starts reveal scroll-fade-in">
+      <section class="criminal-starts reveal crossfade">
         <div class="criminal-content">
           <h2>Not every case starts in the same place</h2>
 
@@ -119,7 +119,8 @@
       </section>
 
       <section
-        class="criminal-feature reveal scroll-fade-in snap-target"
+        class="criminal-feature reveal crossfade"
+        data-exit-lift="12"
         data-photo="assets/photos/Koplow Criminal Defense/Proof.png"
         role="img"
         aria-label="Finger pressing into a fracture point on a dark surface"
@@ -148,7 +149,33 @@
         </div>
       </section>
 
-      <section class="criminal-closing reveal scroll-fade-in" data-lift="0">
+      <section class="criminal-when how-when snap-section">
+        <div class="how-when-inner">
+          <h2 class="how-when-title">WHEN IT MATTERS</h2>
+          <ul class="how-when-list criminal-when-list">
+            <li>When the report is already being treated as the truth.</li>
+            <li>When the evidence looks stronger than it should.</li>
+            <li>When the story has started to harden into the case.</li>
+          </ul>
+        </div>
+        <div class="section-chevron" aria-hidden="true">
+          <svg width="28" height="10" viewBox="0 0 28 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L14 9L27 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </section>
+
+      <section class="paper-bg criminal-next how-next snap-section">
+        <h2 class="how-next-title">WHAT HAPPENS NEXT</h2>
+        <div class="section-chevron how-next-chevron" aria-hidden="true">
+          <svg width="28" height="10" viewBox="0 0 28 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L14 9L27 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <hr class="how-next-rule" />
+        <div class="how-next-copy">
+          <p>You don't get to choose <strong class="gold">when</strong> it starts.</p>
+          <p>You do get to choose <strong class="gold">how</strong> it's handled.</p>
+        </div>
+      </section>
+
+      <section class="criminal-closing reveal crossfade">
         <img class="mark" src="assets/logos/Logo-White-Mark.png" alt="" />
         <div class="criminal-closing-headline">
           <span>WHEN IT LOOKS DEFENSELESS</span>
@@ -160,6 +187,6 @@
 
     <div data-include="partials/footer.html?v=20260418-nav3"></div>
 
-    <script src="site.js?v=20260418-6"></script>
+    <script src="site.js?v=20260518-1"></script>
   </body>
 </html>

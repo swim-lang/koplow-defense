@@ -81,7 +81,7 @@
   revealEls.forEach((el) => io.observe(el));
 
   // ---------- Scroll-driven cross-fades ----------
-  // Sections marked .scroll-fade-in get their opacity/translate set from
+  // Sections marked .crossfade get their opacity/translate set from
   // scroll position so adjacent sections cross-fade smoothly instead of
   // hard-cutting. Sections also fade out as they exit the viewport so the
   // handoff to the next section feels continuous.
@@ -97,7 +97,7 @@
     document.querySelector(".hero .hero-content");
   const hero = heroContent?.closest("section") || document.querySelector(".hero");
   const fadeSections = Array.from(
-    document.querySelectorAll(".scroll-fade-in")
+    document.querySelectorAll(".crossfade")
   );
 
   if (heroContent || fadeSections.length) {
@@ -127,7 +127,10 @@
       // the hero's scroll-out so the two motions stay synchronized.
       fadeSections.forEach((sec, idx) => {
         const rect = sec.getBoundingClientRect();
-        const hasSuccessor = idx < fadeSections.length - 1;
+        const nextSection = sec.nextElementSibling;
+        const hasSuccessor =
+          nextSection?.classList.contains("crossfade") ||
+          nextSection?.classList.contains("snap-section");
         // Per-section motion controls:
         //   data-lift="N"       — entry translateY in px (default 16, upward).
         //   data-exit-lift="N"  — exit translateY in px (default -12, upward).
@@ -153,8 +156,8 @@
           );
         }
 
-        // Exit fade only runs when the next section is also a cross-fade
-        // target — otherwise the section just scrolls naturally off the top.
+        // Exit fade runs when the next section is another managed handoff,
+        // whether that next moment cross-fades or settles in as a snap stop.
         let tOut = 0;
         if (hasSuccessor) {
           const exitStart = winH * 0.6;
